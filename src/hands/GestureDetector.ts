@@ -1,6 +1,6 @@
-import * as Gesture from "../hands/Gesture"
+import * as Gesture from "./Gesture"
 import { Results } from "@mediapipe/hands"
-import Hand from "../hands/Hand"
+import Hand from "./Hand"
 import { Observable, GestureDetectorObserver } from "../types"
 
 
@@ -8,10 +8,6 @@ import { Observable, GestureDetectorObserver } from "../types"
 // we are confident that the user is intentionally making a shape 
 // with their hand and not due to noises.
 const SHAPE_COUNTER_THRESHOLD = 7
-
-// report the status to the user
-const detectedSign = document.getElementById("detectedSign")
-const gestureName = document.getElementById("gestureName")
 
 /**
  * Detect the gesture based on the raw hand data from the HandTracker.
@@ -101,7 +97,7 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 		// check and see the state of the Controller, which is
 		// the current hand gesture of the user.
 		this.detectShape(results)
-		this.observers.forEach(observer => observer(this.hand, this.prevHand, this.confirmedGesture))
+		this.observers.forEach(observer => observer(this.hand, this.prevHand, this.confirmedGesture, this.gestureStartTime))
 	}
 
 	/**
@@ -116,12 +112,10 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 		// we can't do any calculations.
 		let newGesture: Gesture.Gesture = null
 		if (!results || results.multiHandLandmarks.length === 0) {
-			detectedSign.style.backgroundColor = "#ff0007"  // bright red
 			this.hand = null
 		}
 		else {
 			// valid data => start analyzing the shape
-			detectedSign.style.backgroundColor = "#02fd49" // neon green
 			this.hand = new Hand(results.multiHandLandmarks[0])
 			for (let gesture of this.gesturesToDetect) {
 				if (this.hand.matches(gesture)) {
@@ -150,19 +144,10 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 			this.confirmedGesture = newGesture
 			// only get the time when switch to new gesture
 			this.gestureStartTime = Date.now()
-			gestureName.innerText = this.confirmedGesture?.name || "NONE"
 		}
 		this.latestGesture = newGesture
 
 	}
-
-	/**
-	 * Handle an update when we receive a hand data.
-	 * Subclasses should override this method.
-	 * @abstract
-	 * @param results the result of the data parsing.
-	 */
-	update(results: Results | null) { }
 
 	/**
 	 * Add an observer to the HandTracker.

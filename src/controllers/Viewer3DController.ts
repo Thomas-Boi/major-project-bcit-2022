@@ -1,4 +1,3 @@
-import GestureDetector from "./GestureDetector"
 import * as Gesture from "../hands/Gesture"
 import { Results } from "@mediapipe/hands"
 import HandTracker  from "../hands/HandTracker"
@@ -7,10 +6,6 @@ import Hand from "../hands/Hand"
 import { FINGER_INDICES } from "../hands/Finger"
 import { getDelta } from "../util"
 
-// for interacting with the cube
-const TRANSLATE_MULTIPLIER = 6
-const ROTATE_MULTIPLIER = 6
-const SCALE_MULTIPLIER = 4
 
 // tracks how long the user needs to hold their
 // hand to activate something
@@ -155,121 +150,6 @@ export default class Viewer3DController {
 		}
 
 		this.prevHand = this.hand
-	}
-
-	/**
-	 * Detect the shape of the user's hand.
-	 */
-	detectShape(results: Results | null) {
-		// check if the result is usable
-		// if not, mark this.prevHand to null to signify
-		// we can't do any calculations.
-		let newGesture: Gesture.Gesture = null
-		if (!results || results.multiHandLandmarks.length === 0) {
-			detectedSign.style.backgroundColor = "#ff0007"  // bright red
-			this.hand = null
-		}
-		else {
-			// valid data => start analyzing the shape
-			detectedSign.style.backgroundColor = "#02fd49" // neon green
-			this.hand = new Hand(results.multiHandLandmarks[0])
-			for (let gesture of this.gesturesToDetect) {
-				if (this.hand.matches(gesture)) {
-					newGesture = gesture
-					break
-				}
-			}
-		}
-
-		// matching our state => do nothing and continue as normal
-		if (newGesture === this.confirmedGesture) {
-			this.latestGesture = newGesture
-			return
-		}
-
-		// new gesture we never see before => start counting
-		if (newGesture !== this.latestGesture) {
-			this.gestureCounter = 1
-		}
-		// we've seen this gesture recently => user might be switching
-		// so we start counting
-		else this.gestureCounter++
-
-		// pretty sure this is what the user wants => switch to the new state
-		if (this.gestureCounter >= SHAPE_COUNTER_THRESHOLD) {
-			this.confirmedGesture = newGesture
-			// only get the time when switch to new gesture
-			this.gestureStartTime = Date.now()
-			gestureName.innerText = this.confirmedGesture?.name || "NONE"
-		}
-		this.latestGesture = newGesture
-
-	}
-
-	/**
-	 * Translate the object on screen based on the hand and prevHand.
-	 * @param hand the hand of this current frame.
-	 * @param prevHand the hand of the previous frame.
-	 */
-	translate(hand: Hand, prevHand: Hand) {
-		let horizontalDelta = getDelta(hand.middle.joints[FINGER_INDICES.PIP].x, prevHand.middle.joints[FINGER_INDICES.PIP].x)
-		// has to flip horizontal footage since camera flips the view
-		if (this.isSelfieMode) horizontalDelta *= -1
-
-		// has to flip vertical footage since image y-axis run top to bottom (increase downward like js)
-		let verticalDelta = -getDelta(hand.wrist.y, prevHand.wrist.y)
-
-		this.mesh.translate(BABYLON.Axis.X, TRANSLATE_MULTIPLIER * horizontalDelta, BABYLON.Space.WORLD)
-		this.mesh.translate(BABYLON.Axis.Y, TRANSLATE_MULTIPLIER * verticalDelta, BABYLON.Space.WORLD)
-	}
-
-	/**
-	 * Rotate the object around the y axis on screen based on the hand and prevHand.
-	 * @param hand the hand of this current frame.
-	 * @param prevHand the hand of the previous frame.
-	 */
-	rotateAroundY(hand: Hand, prevHand: Hand) {
-		// don't need to flip the horizontal for this. The rotation matches
-		// with the flipped image
-		let horizontalDelta = getDelta(hand.index.joints[FINGER_INDICES.TIP].x, prevHand.index.joints[FINGER_INDICES.TIP].x)
-		if (!this.isSelfieMode) horizontalDelta *= -1
-
-		this.mesh.rotate(BABYLON.Axis.Y, ROTATE_MULTIPLIER * horizontalDelta)
-	}
-
-	/**
-	 * Rotate the object around x-axis on screen based on the hand and prevHand.
-	 * @param hand the hand of this current frame.
-	 * @param prevHand the hand of the previous frame.
-	 */
-	rotateAroundX(hand: Hand, prevHand: Hand) {
-		// has to fliip the vertical to get the right rotation
-		let verticalDelta = -getDelta(hand.index.joints[FINGER_INDICES.TIP].y, prevHand.index.joints[FINGER_INDICES.TIP].y)
-
-		this.mesh.rotate(BABYLON.Axis.X, ROTATE_MULTIPLIER * verticalDelta, BABYLON.Space.WORLD)
-	}
-
-	/**
-	 * Zoom/scale the object on screen based on the hand and prevHand.
-	 * @param hand the hand of this current frame.
-	 * @param prevHand the hand of the previous frame.
-	 */
-	zoom(hand: Hand, prevHand: Hand) {
-		// has to flip the scale because our movement is opposite of the camera
-		// don't need to check for isSelfieThough since we aren't moving on the canvas, just scaling
-		let horizontalDelta = -getDelta(hand.middle.joints[FINGER_INDICES.PIP].x, prevHand.middle.joints[FINGER_INDICES.PIP].x)
-
-		let scale = horizontalDelta * SCALE_MULTIPLIER
-		this.mesh.scaling.addInPlaceFromFloats(scale, scale, scale)
-	}
-
-	/**
-	 * Reset the cube's position, rotation, and scale to its original.
-	 */
-	reset() {
-		this.mesh.scaling = new BABYLON.Vector3(1, 1, 1)
-		this.mesh.position = new BABYLON.Vector3(0, 0, 0)
-		this.mesh.rotation = new BABYLON.Vector3(0, 0, 0)
 	}
 
 	/**

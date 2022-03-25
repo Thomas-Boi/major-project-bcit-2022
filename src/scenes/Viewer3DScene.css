@@ -1,14 +1,3 @@
-/* ///////////////////////// GENERAL ///////////////////// */
-
-body {
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-  color: white;
-}
-
-
-
 canvas {
   width: 100vw;
   height: 100vh;
@@ -17,6 +6,19 @@ canvas {
   margin: none;
 }
 
+.instructionScreen {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  background-color: black;
+  text-align: center;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  grid-template-rows: 40% 60%;
+  row-gap: 5%;
+}
 /* ///////////////////////// STATUSES ///////////////////// */
 
 #statuses {
@@ -42,19 +44,6 @@ canvas {
 }
 
 /* ///////////////////////// LOADING ///////////////////// */
-#loadingScreen {
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-  background-color: black;
-  text-align: center;
-  display: grid;
-  align-items: center;
-  justify-content: center;
-  grid-template-rows: 40% 60%;
-  row-gap: 5%;
-}
 
 #loadingUI {
   position: relative;
@@ -92,12 +81,13 @@ canvas {
 /* ///////////////////////// START ///////////////////// */
 #startMsg {
   /* display: flex; Styling works for display: flex -> JS has to set it to this*/
+  display: flex;
   color: white;
   font-size: 3rem;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  display: none
+  /* display: none */
 }
 
 .startGesture {

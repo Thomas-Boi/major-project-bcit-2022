@@ -18,14 +18,14 @@ const STEPS_PER_SEC = 20
 const UPDATE_STEP_IN_A_SEC = 1000 / STEPS_PER_SEC
 
 
-interface Props {
+interface IProps {
 	tracker: HandTracker
 }
 
 /**
  * Handle work related to the camera.
  */
-export default class InputSource extends React.Component<Props> {
+export default class InputSource extends React.Component<IProps> {
 	/**
 	 * The video element that we are storing the stream in.
 	 */
@@ -43,7 +43,7 @@ export default class InputSource extends React.Component<Props> {
 	 */
 	facingMode: "user" | "environment"
 
-	constructor(props: Props) {
+	constructor(props: IProps) {
 		super(props)
 		
 		// store these things not in state cause we have no need to re-render here
@@ -74,7 +74,7 @@ export default class InputSource extends React.Component<Props> {
 	 * be moving to the right. 
 	 */
 	componentDidMount() {
-		new Camera(this.videoRef.current, {
+		const camera = new Camera(this.videoRef.current, {
 			onFrame: async () => {
 				// do this to ensure that we only process the frame
 				// according to the interval set below
@@ -90,6 +90,7 @@ export default class InputSource extends React.Component<Props> {
 		})
 
 		setInterval(this.setProcessedFrame.bind(this, false), UPDATE_STEP_IN_A_SEC)
+		camera.start()
 	}
 
 	/**
