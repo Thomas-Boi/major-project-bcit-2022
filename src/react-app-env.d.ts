@@ -1,6 +1,10 @@
+/// <reference types="react-scripts" />
+
 import { Results } from "@mediapipe/hands";
-import Hand from "./hands/Hand";
-import { Gesture } from "./hands/Gesture";
+import Hand from "./services/Hand";
+import { Gesture } from "./services/Gesture";
+
+declare module '*.png' 
 
 /**
  * Something that can be observed (Observer Pattern).

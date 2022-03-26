@@ -1,5 +1,5 @@
 import { Hands, Results } from "@mediapipe/hands"
-import { Observable, HandTrackerObserver } from "../types"
+import { Observable, HandTrackerObserver } from "../react-app-env"
 
 
 /**

@@ -1,0 +1,20 @@
+#statuses {
+  display: inline-flex;
+  column-gap: 3vw;
+  align-items: center;
+  position: fixed;
+  top: 5vh;
+  left: 3vw;
+  z-index: 2;
+}
+
+#gestureName {
+  font-size: 2rem;
+}
+
+#detectedSign {
+  display: inline-block;
+  width: 100px;
+  height: 50px;
+  background-color: #ff0007;
+}

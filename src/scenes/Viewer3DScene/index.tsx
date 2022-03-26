@@ -1,9 +1,12 @@
 import React from "react"
 import Hand from "../../services/Hand"
 import { FINGER_INDICES } from "../../services/Finger"
-import "./Viewer3DScene.css"
 import GestureDetector from "../../services/GestureDetector"
 import * as Gesture from "../../services/Gesture"
+import StatusBar from "../../components/StatusBar"
+import Viewer3DInstruction from "../../components/Viewer3DInstruction"
+import { getDelta } from "../../services/util"
+import "./index.css"
 
 interface IProps {
 	/**
@@ -249,64 +252,4 @@ export default class Viewer3DScene extends React.Component<IProps, IState> {
 		this.mesh.rotation = new BABYLON.Vector3(0, 0, 0)
 	}
 
-}
-
-//// SUPPORT COMPONENTS ////
-function Viewer3DInstruction() {
-  return (
-    <div className='instructionScreen'>
-			<span id="loadingUI">
-				<div className='spinner'>
-				</div>
-				<div className="spinnerText">LOADING</div>
-			</span>
-			<span id="startMsg">
-				<img src="build/img/five.png" className="startGesture" alt='Start gesture'/>TO START
-			</span>
-			<div id="instructionDiv">
-				<img className="instruction" src="build/img/translate.png" alt='Translate instruction'/>
-				<img className="instruction" src="build/img/rotate_y.png"  alt='Rotate Y instruction'/>
-				<img className="instruction" src="build/img/rotate_x.png" alt='Rotate X instruction'/>
-				<img className="instruction" src="build/img/zoom.png" alt='Zoom instruction'/>
-				<img className="instruction" src="build/img/reset.png" alt='Reset instruction'/>
-				<div className="instructionText">TRANSLATE</div>
-				<div className="instructionText">ROTATE Y</div>
-				<div className="instructionText">ROTATE X</div>
-				<div className="instructionText">ZOOM</div>
-				<div className="instructionText">RESET</div>
-			</div>
-		</div>
-  )
-}
-
-/**
- * Report the status to the user.
- * */ 
-function StatusBar(props: {detected: boolean, gestureName: string}) {
-	return (
-		<div id="statuses">
-			<span id="detectedSign" style={{backgroundColor: props.detected ? "#02fd49" : "#ff0007"}}></span>
-			<span id="gestureName">{props.gestureName}</span>
-		</div>
-	)
-
-}
-
-
-/**
- * Get the difference between 2 numbers. Also round it
- * to decimalPlace.
- * @param a, the first number. 
- * @param b, the second number.
- * @param decimalPlace, how much we are rounding the delta result.
- * Default to 7 decimal place.
- * @returns 
- */
-function getDelta(a: number, b: number, decimalPlace: number=7) {
-	let delta = a - b
-
-	// round to x decimal place, see https://stackoverflow.com/a/11832950/11683637
-	let decimalConvertor = 10 ** decimalPlace
-	delta = Math.round(delta * decimalConvertor) / decimalConvertor
-	return delta
 }

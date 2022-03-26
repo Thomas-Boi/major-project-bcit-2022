@@ -1,0 +1,56 @@
+canvas {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  margin: none;
+}
+
+.instructionScreen {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  background-color: black;
+  text-align: center;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  grid-template-rows: 40% 60%;
+  row-gap: 5%;
+}
+
+/* ///////////////////////// LOADING ///////////////////// */
+
+#loadingUI {
+  position: relative;
+  width: min-content;
+  justify-self: center;
+  display: grid;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 13vw;
+  height: 13vw;
+  animation: spin 2s linear infinite;
+  border: 32px solid white;
+  border-top: 32px solid black;
+  border-radius: 50%;
+  margin: auto;
+}
+
+.spinnerText {
+  width: 100%;
+  position: absolute;
+  align-self: center;
+  font-size: 1.5rem;
+}

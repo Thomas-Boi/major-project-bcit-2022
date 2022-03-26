@@ -1,7 +1,7 @@
 import * as Gesture from "./Gesture"
 import { Results } from "@mediapipe/hands"
 import Hand from "./Hand"
-import { Observable, GestureDetectorObserver } from "../types"
+import { Observable, GestureDetectorObserver } from "../react-app-env"
 
 
 // when the track counter pass this threshold,
@@ -93,7 +93,7 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 	 * Handle the update callback from HandTracker.
 	 * @param results a MediaPipe Hands result object.
 	 */
-	onResultsCallback(results: Results | null) {
+	onResultsCallback = (results: Results | null) => {
 		// check and see the state of the Controller, which is
 		// the current hand gesture of the user.
 		this.detectShape(results)
