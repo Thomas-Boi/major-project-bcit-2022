@@ -1,8 +1,8 @@
 import React from 'react'
 import Viewer3DScene from './Viewer3DScene'
-import InputSource from "../inputSource/InputSource"
-import HandTracker from "../hands/HandTracker"
-import GestureDetector from '../hands/GestureDetector'
+import InputSource from "../components/InputSource"
+import HandTracker from "../services/HandTracker"
+import GestureDetector from '../services/GestureDetector'
 
 class App extends React.Component {
   /**

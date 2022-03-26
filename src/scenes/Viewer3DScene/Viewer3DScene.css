@@ -1,0 +1,129 @@
+canvas {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  margin: none;
+}
+
+.instructionScreen {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  background-color: black;
+  text-align: center;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  grid-template-rows: 40% 60%;
+  row-gap: 5%;
+}
+/* ///////////////////////// STATUSES ///////////////////// */
+
+#statuses {
+  /* display: inline-flex; JS need to set #status to inline-block to work*/
+  column-gap: 3vw;
+  align-items: center;
+  position: fixed;
+  top: 5vh;
+  left: 3vw;
+  z-index: 2;
+  display: none;
+}
+
+#gestureName {
+  font-size: 2rem;
+}
+
+#detectedSign {
+  display: inline-block;
+  width: 100px;
+  height: 50px;
+  background-color: #ff0007;
+}
+
+/* ///////////////////////// LOADING ///////////////////// */
+
+#loadingUI {
+  position: relative;
+  width: min-content;
+  justify-self: center;
+  display: grid;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 13vw;
+  height: 13vw;
+  animation: spin 2s linear infinite;
+  border: 32px solid white;
+  border-top: 32px solid black;
+  border-radius: 50%;
+  margin: auto;
+}
+
+.spinnerText {
+  width: 100%;
+  position: absolute;
+  align-self: center;
+  font-size: 1.5rem;
+}
+
+/* ///////////////////////// START ///////////////////// */
+#startMsg {
+  /* display: flex; Styling works for display: flex -> JS has to set it to this*/
+  display: flex;
+  color: white;
+  font-size: 3rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  /* display: none */
+}
+
+.startGesture {
+  margin-right: 2rem;
+}
+
+/* ///////////////////////// INSTRUCTION ///////////////////// */
+
+#instructionDiv {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 4fr 3fr;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 2rem;
+  border-top: 3px solid white;
+}
+
+.instruction {
+  height: auto; 
+  width: 100%;
+  border-right: 3px solid white;
+}
+
+.instruction:last-of-type {
+  border-right: none;
+}
+
+.instructionText {
+  height: 100%;
+  width: 100%;
+  border-right: 3px solid white;
+}
+
+.instructionText:last-of-type {
+  border-right: none;
+}

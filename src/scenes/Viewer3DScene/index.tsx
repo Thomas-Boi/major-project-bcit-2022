@@ -1,0 +1,312 @@
+import React from "react"
+import Hand from "../../services/Hand"
+import { FINGER_INDICES } from "../../services/Finger"
+import "./Viewer3DScene.css"
+import GestureDetector from "../../services/GestureDetector"
+import * as Gesture from "../../services/Gesture"
+
+interface IProps {
+	/**
+	 * Whether the screen is facing the user.
+	 */
+	isScreenFacingUser: boolean
+
+	/**
+	 * The GestureDetector that we can observe.
+	 */
+	gestureDetector: GestureDetector
+}
+
+interface IState {
+	/**
+	 * Whether to remove the instruction scene.
+	 */
+	showsInstruction: boolean
+
+	/**
+	 * The name of the gesture to display on the screen.
+	 */
+	gestureName: string
+
+	/**
+	 * Whether the gesture was detectable.
+	 */
+	detected: boolean
+}
+
+// for interacting with the cube
+const TRANSLATE_MULTIPLIER = 6
+const ROTATE_MULTIPLIER = 6
+const SCALE_MULTIPLIER = 4
+
+// tracks how long the user needs to hold their
+// hand to activate something
+const RESET_COUNTER_THRESHOLD_MILISEC = 1000
+const START_THRESHOLD_MILISEC = 600
+
+export default class Viewer3DScene extends React.Component<IProps, IState> {
+	/**
+	 * A BABYLON Mesh object.
+	 */
+	mesh: BABYLON.Mesh
+
+	/**
+	 * The BABYLON engine.
+	 */
+	engine: BABYLON.Engine
+
+	constructor(props: IProps) {
+		super(props)
+		this.state = {
+			showsInstruction: true,
+			gestureName: "NONE",
+			detected: false
+		}
+
+		/**
+		 * First step: add a check for removing the instruction.
+		 */
+		this.props.gestureDetector.addObserver(this.removeInstruction)
+		this.props.gestureDetector.addGesturesToDetect([Gesture.FIVE])
+	}
+
+	render() {
+		return (
+			<div>
+				{
+					this.state.showsInstruction && 
+						<Viewer3DInstruction />
+				}
+				<StatusBar gestureName={this.state.gestureName} detected={this.state.detected}/>
+				<canvas id='canvas'></canvas>
+			</div>
+		)
+	}
+
+	/**
+	 * Init the BabylonJS canvas.
+	 */
+	componentDidMount() {
+		const canvas = document.getElementById("canvas") as HTMLCanvasElement
+		this.engine = new BABYLON.Engine(canvas, true)
+
+		const scene = new BABYLON.Scene(this.engine)
+		scene.clearColor = new BABYLON.Color4(0, 0, 0)
+		const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0), scene)
+		camera.attachControl(canvas, true)
+		
+		new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene)
+		this.mesh = BABYLON.MeshBuilder.CreateBox("box", {
+			faceColors: [
+				new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0),
+				new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0)
+			],
+			size: 0.5
+		}, scene)
+
+		// attach the render callback
+		this.engine.runRenderLoop(() => scene.render())
+
+		// handle resizing
+		window.addEventListener("resize", this.resize)
+	}
+
+	/**
+	 * Resize the canvas after screen is resized.
+	 */
+	resize = () => {
+		this.engine.resize()
+	}
+
+	/**
+	 * Shut down the BabylonJS engine.
+	 */
+	componentWillUnmount(): void {
+		window.removeEventListener("resize", this.resize)
+		this.engine.dispose()
+	}
+
+	removeInstruction = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
+		if (curGesture === Gesture.FIVE) {
+			if (Date.now() - gestureStartTime >= START_THRESHOLD_MILISEC) {
+				this.props.gestureDetector.removeObserver(this.removeInstruction)
+				this.props.gestureDetector.addObserver(this.update)
+				// update the gestures to look for
+				this.props.gestureDetector.removeAllGesturesToDetect()
+				this.props.gestureDetector.addGesturesToDetect([
+					Gesture.FIVE,
+					Gesture.GRAB_FIST,
+					Gesture.ONE,
+					Gesture.ROTATE_X,
+					Gesture.THUMBS_UP,
+					Gesture.L_SHAPE
+				])
+
+				this.setState({showsInstruction: false})
+			}
+		}
+	}
+
+	/**
+	 * Handle the onResults event of the Hands tracker.
+	 * @param results the result of the data parsing.
+	 */
+	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
+		if (!(hand && prevHand)) {
+			// for prevHand
+			// if there's a none flash in between
+			// two valid gestures, the 2nd valid gesture will have
+			// a null prevHand => this checks avoid it
+			this.setState({detected: false, gestureName: curGesture.name})
+			return
+		}
+		else if (curGesture === Gesture.GRAB_FIST) {
+			this.translate(hand, prevHand)
+		}
+		else if (curGesture === Gesture.ONE) {
+			this.rotateAroundY(hand, prevHand)
+		}
+		else if (curGesture === Gesture.ROTATE_X) {
+			this.rotateAroundX(hand, prevHand)
+		}
+		else if (curGesture === Gesture.THUMBS_UP) {
+			this.zoom(hand, prevHand)
+		}
+		else if (curGesture === Gesture.L_SHAPE) {
+			if (Date.now() - gestureStartTime >= RESET_COUNTER_THRESHOLD_MILISEC) {
+				this.reset()
+			}
+
+		}
+
+		// this is for valid detections
+		this.setState({detected: true, gestureName: curGesture.name})
+	}
+
+	/**
+	 * Translate the object on screen based on the hand and prevHand.
+	 * @param hand the hand of this current frame.
+	 * @param prevHand the hand of the previous frame.
+	 */
+	translate(hand: Hand, prevHand: Hand) {
+		let horizontalDelta = getDelta(hand.middle.joints[FINGER_INDICES.PIP].x, prevHand.middle.joints[FINGER_INDICES.PIP].x)
+		// has to flip horizontal footage since camera flips the view
+		if (this.props.isScreenFacingUser) horizontalDelta *= -1
+
+		// has to flip vertical footage since image y-axis run top to bottom (increase downward like js)
+		let verticalDelta = -getDelta(hand.wrist.y, prevHand.wrist.y)
+
+		this.mesh.translate(BABYLON.Axis.X, TRANSLATE_MULTIPLIER * horizontalDelta, BABYLON.Space.WORLD)
+		this.mesh.translate(BABYLON.Axis.Y, TRANSLATE_MULTIPLIER * verticalDelta, BABYLON.Space.WORLD)
+	}
+
+	/**
+	 * Rotate the object around the y axis on screen based on the hand and prevHand.
+	 * @param hand the hand of this current frame.
+	 * @param prevHand the hand of the previous frame.
+	 */
+	rotateAroundY(hand: Hand, prevHand: Hand) {
+		// don't need to flip the horizontal for this. The rotation matches
+		// with the flipped image
+		let horizontalDelta = getDelta(hand.index.joints[FINGER_INDICES.TIP].x, prevHand.index.joints[FINGER_INDICES.TIP].x)
+		if (!this.props.isScreenFacingUser) horizontalDelta *= -1
+
+		this.mesh.rotate(BABYLON.Axis.Y, ROTATE_MULTIPLIER * horizontalDelta)
+	}
+
+	/**
+	 * Rotate the object around x-axis on screen based on the hand and prevHand.
+	 * @param hand the hand of this current frame.
+	 * @param prevHand the hand of the previous frame.
+	 */
+	rotateAroundX(hand: Hand, prevHand: Hand) {
+		// has to fliip the vertical to get the right rotation
+		let verticalDelta = -getDelta(hand.index.joints[FINGER_INDICES.TIP].y, prevHand.index.joints[FINGER_INDICES.TIP].y)
+
+		this.mesh.rotate(BABYLON.Axis.X, ROTATE_MULTIPLIER * verticalDelta, BABYLON.Space.WORLD)
+	}
+
+	/**
+	 * Zoom/scale the object on screen based on the hand and prevHand.
+	 * @param hand the hand of this current frame.
+	 * @param prevHand the hand of the previous frame.
+	 */
+	zoom(hand: Hand, prevHand: Hand) {
+		// has to flip the scale because our movement is opposite of the camera
+		// don't need to check for isSelfieThough since we aren't moving on the canvas, just scaling
+		let horizontalDelta = -getDelta(hand.middle.joints[FINGER_INDICES.PIP].x, prevHand.middle.joints[FINGER_INDICES.PIP].x)
+
+		let scale = horizontalDelta * SCALE_MULTIPLIER
+		this.mesh.scaling.addInPlaceFromFloats(scale, scale, scale)
+	}
+
+	/**
+	 * Reset the cube's position, rotation, and scale to its original.
+	 */
+	reset() {
+		this.mesh.scaling = new BABYLON.Vector3(1, 1, 1)
+		this.mesh.position = new BABYLON.Vector3(0, 0, 0)
+		this.mesh.rotation = new BABYLON.Vector3(0, 0, 0)
+	}
+
+}
+
+//// SUPPORT COMPONENTS ////
+function Viewer3DInstruction() {
+  return (
+    <div className='instructionScreen'>
+			<span id="loadingUI">
+				<div className='spinner'>
+				</div>
+				<div className="spinnerText">LOADING</div>
+			</span>
+			<span id="startMsg">
+				<img src="build/img/five.png" className="startGesture" alt='Start gesture'/>TO START
+			</span>
+			<div id="instructionDiv">
+				<img className="instruction" src="build/img/translate.png" alt='Translate instruction'/>
+				<img className="instruction" src="build/img/rotate_y.png"  alt='Rotate Y instruction'/>
+				<img className="instruction" src="build/img/rotate_x.png" alt='Rotate X instruction'/>
+				<img className="instruction" src="build/img/zoom.png" alt='Zoom instruction'/>
+				<img className="instruction" src="build/img/reset.png" alt='Reset instruction'/>
+				<div className="instructionText">TRANSLATE</div>
+				<div className="instructionText">ROTATE Y</div>
+				<div className="instructionText">ROTATE X</div>
+				<div className="instructionText">ZOOM</div>
+				<div className="instructionText">RESET</div>
+			</div>
+		</div>
+  )
+}
+
+/**
+ * Report the status to the user.
+ * */ 
+function StatusBar(props: {detected: boolean, gestureName: string}) {
+	return (
+		<div id="statuses">
+			<span id="detectedSign" style={{backgroundColor: props.detected ? "#02fd49" : "#ff0007"}}></span>
+			<span id="gestureName">{props.gestureName}</span>
+		</div>
+	)
+
+}
+
+
+/**
+ * Get the difference between 2 numbers. Also round it
+ * to decimalPlace.
+ * @param a, the first number. 
+ * @param b, the second number.
+ * @param decimalPlace, how much we are rounding the delta result.
+ * Default to 7 decimal place.
+ * @returns 
+ */
+function getDelta(a: number, b: number, decimalPlace: number=7) {
+	let delta = a - b
+
+	// round to x decimal place, see https://stackoverflow.com/a/11832950/11683637
+	let decimalConvertor = 10 ** decimalPlace
+	delta = Math.round(delta * decimalConvertor) / decimalConvertor
+	return delta
+}
