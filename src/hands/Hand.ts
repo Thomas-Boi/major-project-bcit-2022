@@ -44,6 +44,11 @@ export default class Hand {
 	 */
 	fingerNames: Array<string>
 
+	/**
+	 * Let typescript know we can access these properties using string.
+	 */
+	[key: string]: Hand[keyof Hand]
+
 	constructor(hand: LandmarkList) {
 		this.wrist = hand[LANDMARK_INDEX.WRIST]
 		this.thumb = new Thumb(hand.slice(LANDMARK_INDEX.THUMB_CMC, LANDMARK_INDEX.THUMB_TIP + 1))
@@ -82,8 +87,8 @@ export default class Hand {
 		// 	console.log("Checking gesture:", gesture.name)
 		// }
 		for (let fingerName of this.fingerNames) {
-			let finger: Finger = this[fingerName]
-			let fingerState: FingerState = gesture[fingerName]
+			let finger = this[fingerName] as Finger
+			let fingerState = gesture[fingerName] as FingerState 
 
 			if (fingerState.isStraight !== null) {
 				if (fingerState.isStraight !== finger.isStraight) {

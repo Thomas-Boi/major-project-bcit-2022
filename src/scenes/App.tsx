@@ -1,23 +1,8 @@
 import React from 'react'
-// import Viewer3DScene from './Viewer3DScene'
+import Viewer3DScene from './Viewer3DScene'
 import InputSource from "../inputSource/InputSource"
 import HandTracker from "../hands/HandTracker"
 import GestureDetector from '../hands/GestureDetector'
-
-// main()
-// function main() {
-//   // set up components
-//   const tracker = new HandTracker()
-//   const inputSource = new InputSource()
-//   const controller = new Controller(inputSource.facingMode)
-
-//   // connect the pipeline
-//   // input -> tracker -> controller
-//   inputSource.initCamera(tracker)
-//   controller.subscribe(tracker)
-
-//   inputSource.start()
-// }
 
 class App extends React.Component {
   /**
@@ -42,7 +27,7 @@ class App extends React.Component {
    */
   gestureDetector: GestureDetector
 
-  constructor(props) {
+  constructor(props: any) {
     super(props)
     this.state = {
       
@@ -68,6 +53,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <InputSource tracker={this.handTracker}/>
+        <Viewer3DScene isScreenFacingUser={true} gestureDetector={this.gestureDetector}/>
       </div>
     );
   }

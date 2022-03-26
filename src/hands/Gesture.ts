@@ -70,6 +70,11 @@ export class Gesture {
 	 */
 	pinky: FingerState
 
+	/**
+	 * Let typescript know we can access these properties using string.
+	 */
+	[key: string]: Gesture[keyof Gesture]
+
 	constructor(name: string, thumb: FingerState=CLOSED_THUMB, index: FingerState=GENERAL_CLOSED_FINGER,
 		middle: FingerState=GENERAL_CLOSED_FINGER, ring: FingerState=GENERAL_CLOSED_FINGER, pinky: FingerState=GENERAL_CLOSED_FINGER) {
 		

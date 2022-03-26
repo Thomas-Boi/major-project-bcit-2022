@@ -2,6 +2,7 @@ import React from "react"
 import Hand from "../hands/Hand"
 import { FINGER_INDICES } from "../hands/Finger"
 import "./Viewer3DScene.css"
+import GestureDetector from "../hands/GestureDetector"
 import * as Gesture from "../hands/Gesture"
 
 interface IProps {
@@ -9,6 +10,11 @@ interface IProps {
 	 * Whether the screen is facing the user.
 	 */
 	isScreenFacingUser: boolean
+
+	/**
+	 * The GestureDetector that we can observe.
+	 */
+	gestureDetector: GestureDetector
 }
 
 interface IState {
@@ -44,6 +50,9 @@ export default class Viewer3DScene extends React.Component<IProps, IState> {
 	 */
 	mesh: BABYLON.Mesh
 
+	/**
+	 * The BABYLON engine.
+	 */
 	engine: BABYLON.Engine
 
 	constructor(props: IProps) {
@@ -53,6 +62,12 @@ export default class Viewer3DScene extends React.Component<IProps, IState> {
 			gestureName: "NONE",
 			detected: false
 		}
+
+		/**
+		 * First step: add a check for removing the instruction.
+		 */
+		this.props.gestureDetector.addObserver(this.removeInstruction)
+		this.props.gestureDetector.addGesturesToDetect([Gesture.FIVE])
 	}
 
 	render() {
@@ -111,11 +126,32 @@ export default class Viewer3DScene extends React.Component<IProps, IState> {
 		this.engine.dispose()
 	}
 
+	removeInstruction = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
+		if (curGesture === Gesture.FIVE) {
+			if (Date.now() - gestureStartTime >= START_THRESHOLD_MILISEC) {
+				this.props.gestureDetector.removeObserver(this.removeInstruction)
+				this.props.gestureDetector.addObserver(this.update)
+				// update the gestures to look for
+				this.props.gestureDetector.removeAllGesturesToDetect()
+				this.props.gestureDetector.addGesturesToDetect([
+					Gesture.FIVE,
+					Gesture.GRAB_FIST,
+					Gesture.ONE,
+					Gesture.ROTATE_X,
+					Gesture.THUMBS_UP,
+					Gesture.L_SHAPE
+				])
+
+				this.setState({showsInstruction: false})
+			}
+		}
+	}
+
 	/**
 	 * Handle the onResults event of the Hands tracker.
 	 * @param results the result of the data parsing.
 	 */
-	update(hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) {
+	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
 		if (!(hand && prevHand)) {
 			// for prevHand
 			// if there's a none flash in between

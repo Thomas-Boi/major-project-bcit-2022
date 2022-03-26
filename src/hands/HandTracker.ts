@@ -45,22 +45,22 @@ export default class HandTracker implements Observable<HandTrackerObserver>{
 
 	/**
 	 * Add an observer to the HandTracker.
-	 * @param observer a new listener.
-	 * @param key the name of the listener. Default is
-	 * a random value if you don't intend to reaccess the
-	 * listener.
+	 * @param observer a callback function matching the required signature.
+	 * @param key the name of the observer. Default is
+	 * the observer function's name.
 	 */
-	addObserver(observer: HandTrackerObserver, key: String=null) {
-		if (key === null) key = `${new Date().getTime()}`
+	addObserver(observer: HandTrackerObserver, key: String=observer.name) {
 		this.observers.set(key, observer)
 	}
 
 	/**
 	 * Remove a observer based on the name.
-	 * @param key the listener's name that we want to remove.
+	 * @param key the observer that we want to remove. Could pass in
+	 * either the function or the key that was used to add the observer.
 	 * @return true if the object was deleted. Else, false.
 	 */
-	removeObserver(key: String) {
+	removeObserver(key: String | Function) {
+		if (typeof key == "function") key = key.name
 		return this.observers.delete(key)
 	}
 }
