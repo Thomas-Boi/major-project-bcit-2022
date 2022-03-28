@@ -1,7 +1,7 @@
 import React from "react"
 import {Camera} from "@mediapipe/camera_utils"
 import HandTracker from "../../services/HandTracker"
-import "./InputSource.css"
+import style from "./index.module.css"
 
 /**
  * Tracks how many steps/update we can do per second.
@@ -58,7 +58,7 @@ export default class InputSource extends React.Component<IProps> {
 
 	render() {
 		return (
-			<video ref={this.videoRef}></video>
+			<video className={style.video} ref={this.videoRef}></video>
 		)
 	}
 

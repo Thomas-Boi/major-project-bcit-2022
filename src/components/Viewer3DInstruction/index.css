@@ -4,6 +4,7 @@
   justify-content: center;
   grid-template-rows: 40% 60%;
   row-gap: 5%;
+  background-color: black;
 }
 
 #startMsg {

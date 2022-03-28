@@ -5,8 +5,8 @@ import Hand from "services/Hand"
 import { Gesture } from "services/Gesture"
 import GestureDetector from "services/GestureDetector"
 
-declare module '*.png' 
-declare module '*.mp4' 
+declare module "*.mp4";
+declare module "*.png";
 
 /**
  * Props for the scenes in this app.

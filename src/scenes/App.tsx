@@ -1,9 +1,10 @@
 import React from 'react'
-import Viewer3DScene from './Viewer3DScene'
 import InputSource from "components/InputSource"
 import HandTracker from "services/HandTracker"
 import GestureDetector from 'services/GestureDetector'
 import MenuScene from './MenuScene'
+import Viewer3DScene from './Viewer3DScene'
+import EatherScene from './EatherScene'
 
 const SCENES =  {
   "MENU": 0,
@@ -34,7 +35,7 @@ class App extends React.Component<any, IState> {
   constructor(props: any) {
     super(props)
     this.state = {
-      curScene: SCENES.MENU      
+      curScene: SCENES.EATHER      
     }
 
     // connect the pipeline
@@ -52,6 +53,9 @@ class App extends React.Component<any, IState> {
     let scene = <MenuScene isScreenFacingUser={true} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
     if (this.state.curScene === 1) {
       scene = <Viewer3DScene isScreenFacingUser={true} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
+    }
+    else if (this.state.curScene === 2) {
+      scene = <EatherScene isScreenFacingUser={true} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
     }
 
     // after the input source is mounted, it will start the pipeline process

@@ -135,7 +135,10 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 
 				this.setState({showsInstruction: false})
 			}
+			this.setState({detected: true, gestureName: curGesture.name})
+			return
 		}
+		this.setState({detected: false, gestureName: "NONE"})
 	}
 
 	/**
@@ -148,7 +151,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 			// if there's a none flash in between
 			// two valid gestures, the 2nd valid gesture will have
 			// a null prevHand => this checks avoid it
-			this.setState({detected: false, gestureName: curGesture.name})
+			this.setState({detected: false, gestureName: "NONE"})
 			return
 		}
 		else if (curGesture === Gesture.GRAB_FIST) {
@@ -161,7 +164,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 			this.rotateAroundX(hand, prevHand)
 		}
 		else if (curGesture === Gesture.THUMBS_UP) {
-			this.zoom(hand, prevHand)
+			this.scale(hand, prevHand)
 		}
 		else if (curGesture === Gesture.L_SHAPE) {
 			if (Date.now() - gestureStartTime >= RESET_COUNTER_THRESHOLD_MILISEC) {
@@ -218,11 +221,11 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	}
 
 	/**
-	 * Zoom/scale the object on screen based on the hand and prevHand.
+	 * Scale the object on screen based on the hand and prevHand.
 	 * @param hand the hand of this current frame.
 	 * @param prevHand the hand of the previous frame.
 	 */
-	zoom(hand: Hand, prevHand: Hand) {
+	scale(hand: Hand, prevHand: Hand) {
 		// has to flip the scale because our movement is opposite of the camera
 		// don't need to check for isSelfieThough since we aren't moving on the canvas, just scaling
 		let horizontalDelta = -getDelta(hand.middle.joints[FINGER_INDICES.PIP].x, prevHand.middle.joints[FINGER_INDICES.PIP].x)

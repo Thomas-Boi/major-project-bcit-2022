@@ -1,4 +1,4 @@
-video {
+.video {
   /* Same width and height to match the resolution in InputSource.ts*/
   width: 512px;
   height: 288px;
