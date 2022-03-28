@@ -1,7 +1,7 @@
 import * as Gesture from "./Gesture"
 import { Results } from "@mediapipe/hands"
 import Hand from "./Hand"
-import { Observable, GestureDetectorObserver } from "../react-app-env"
+import { Observable, GestureDetectorObserver } from "react-app-env"
 
 
 // when the track counter pass this threshold,

@@ -1,3 +1,11 @@
+.instructionScreen {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  grid-template-rows: 40% 60%;
+  row-gap: 5%;
+}
+
 #startMsg {
   display: flex;
   color: white;

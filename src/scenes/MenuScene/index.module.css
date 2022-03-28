@@ -1,0 +1,22 @@
+.scene {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 3fr 1fr;
+  column-gap: 25%;
+  height: 100vh;
+  width: 120vh; 
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.img {
+  height: auto;
+  width: 100%;
+}
+
+.text {
+  font-size: 3em;
+}

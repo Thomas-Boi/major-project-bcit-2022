@@ -1,10 +1,32 @@
 /// <reference types="react-scripts" />
 
-import { Results } from "@mediapipe/hands";
-import Hand from "./services/Hand";
-import { Gesture } from "./services/Gesture";
+import { Results } from "@mediapipe/hands"
+import Hand from "services/Hand"
+import { Gesture } from "services/Gesture"
+import GestureDetector from "services/GestureDetector"
 
 declare module '*.png' 
+declare module '*.mp4' 
+
+/**
+ * Props for the scenes in this app.
+ */
+export interface SceneProps {
+	/**
+	 * Whether the screen is facing the user.
+	 */
+	isScreenFacingUser: boolean
+
+	/**
+	 * The GestureDetector that we can observe.
+	 */
+	gestureDetector: GestureDetector
+
+	/**
+	 * A callback to load one of the other scenes
+	 */
+	loadSceneCallback: (sceneName: "MENU"|"3D"|"EATHER") => void
+}
 
 /**
  * Something that can be observed (Observer Pattern).

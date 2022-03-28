@@ -1,5 +1,13 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "assets/*": ["assets/*"],
+      "services/*": ["services/*"],
+      "components/*": ["components/*"],
+      "react-app-env": ["react-app-env"],
+      "scenes/*": ["scenes/*"]
+    },
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "module": "commonjs",

@@ -1,24 +1,12 @@
 import React from "react"
-import Hand from "../../services/Hand"
-import { FINGER_INDICES } from "../../services/Finger"
-import GestureDetector from "../../services/GestureDetector"
-import * as Gesture from "../../services/Gesture"
-import StatusBar from "../../components/StatusBar"
-import Viewer3DInstruction from "../../components/Viewer3DInstruction"
-import { getDelta } from "../../services/util"
+import Hand from "services/Hand"
+import { FINGER_INDICES } from "services/Finger"
+import * as Gesture from "services/Gesture"
+import StatusBar from "components/StatusBar"
+import Viewer3DInstruction from "components/Viewer3DInstruction"
+import { getDelta } from "services/util"
 import "./index.css"
-
-interface IProps {
-	/**
-	 * Whether the screen is facing the user.
-	 */
-	isScreenFacingUser: boolean
-
-	/**
-	 * The GestureDetector that we can observe.
-	 */
-	gestureDetector: GestureDetector
-}
+import { SceneProps } from "react-app-env"
 
 interface IState {
 	/**
@@ -47,7 +35,7 @@ const SCALE_MULTIPLIER = 4
 const RESET_COUNTER_THRESHOLD_MILISEC = 1000
 const START_THRESHOLD_MILISEC = 600
 
-export default class Viewer3DScene extends React.Component<IProps, IState> {
+export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	/**
 	 * A BABYLON Mesh object.
 	 */
@@ -58,7 +46,7 @@ export default class Viewer3DScene extends React.Component<IProps, IState> {
 	 */
 	engine: BABYLON.Engine
 
-	constructor(props: IProps) {
+	constructor(props: SceneProps) {
 		super(props)
 		this.state = {
 			showsInstruction: true,

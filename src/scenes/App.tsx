@@ -1,20 +1,24 @@
 import React from 'react'
 import Viewer3DScene from './Viewer3DScene'
-import InputSource from "../components/InputSource"
-import HandTracker from "../services/HandTracker"
-import GestureDetector from '../services/GestureDetector'
+import InputSource from "components/InputSource"
+import HandTracker from "services/HandTracker"
+import GestureDetector from 'services/GestureDetector'
+import MenuScene from './MenuScene'
 
-class App extends React.Component {
+const SCENES =  {
+  "MENU": 0,
+  "3D": 1,
+  "EATHER": 2
+}
+
+interface IState {
   /**
    * The current scene index.
    */
   curScene: number
+}
 
-  /**
-   * All the scenes that we have in this app.
-   */
-  scenes: Array<React.Component>
-
+class App extends React.Component<any, IState> {
   ///// PIPELINE /////
   /**
    * The HandTracker that parses our camera input.
@@ -30,32 +34,37 @@ class App extends React.Component {
   constructor(props: any) {
     super(props)
     this.state = {
-      
+      curScene: SCENES.MENU      
     }
-    this.curScene = 0
-    this.scenes = [
-    ]
-
-    // note that 
-    this.handTracker = new HandTracker()
-    this.gestureDetector = new GestureDetector()
 
     // connect the pipeline
     // input -> tracker -> gestureDetector -> scene
     // set up tracker -> gestureDetector first then
     // scene and input finally
+    this.handTracker = new HandTracker()
+    this.gestureDetector = new GestureDetector()
     this.handTracker.addObserver(this.gestureDetector.onResultsCallback)
+
   }
 
   render() {
-    // after the input source is mounted, it will start the pipeline
-    // process
+    // default scene is the menu 
+    let scene = <MenuScene isScreenFacingUser={true} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
+    if (this.state.curScene === 1) {
+      scene = <Viewer3DScene isScreenFacingUser={true} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
+    }
+
+    // after the input source is mounted, it will start the pipeline process
     return (
       <div className="App">
         <InputSource tracker={this.handTracker}/>
-        <Viewer3DScene isScreenFacingUser={true} gestureDetector={this.gestureDetector}/>
+        {scene}
       </div>
     );
+  }
+
+  loadScene = (sceneName: "MENU"|"3D"|"EATHER") => {
+    this.setState({curScene: SCENES[sceneName]})
   }
 }
 

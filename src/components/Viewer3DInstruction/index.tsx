@@ -1,10 +1,10 @@
 import React from "react"
-import translate from "../../assets/img/translate.png"
-import rotateY from "../../assets/img/rotate_y.png"
-import rotateX from "../../assets/img/rotate_x.png"
-import scale from "../../assets/img/scale.png"
-import reset from "../../assets/img/reset.png"
-import five from "../../assets/img/five.png"
+import translate from "assets/img/translate.png"
+import rotateY from "assets/img/rotate_y.png"
+import rotateX from "assets/img/rotate_x.png"
+import scale from "assets/img/scale.png"
+import reset from "assets/img/reset.png"
+import five from "assets/img/five.png"
 import "./index.css"
 
 export default function Viewer3DInstruction() {
