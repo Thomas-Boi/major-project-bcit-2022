@@ -83,9 +83,9 @@ export default class IncantationManager extends React.Component<IProps, IState> 
 			activeIncants: []
     }
 
-    let possibleIncants = Object.keys(this.props.vidIncantations).map(vidName => {
+    // let possibleIncants = Object.keys(this.props.vidIncantations).map(weatherName => {
       
-    })
+    // })
   }
 
   render() {

@@ -1,11 +1,18 @@
 import React from "react"
 import cssFile from "./index.module.css"
+import {Gesture} from "services/Gesture"
 
 export interface IncantationData {
-  /**
-   * The url of the image we want to display.
-   */
-  imgUrl: string;
+  imgUrl: string
+  // /**
+  //  * The weather effect associated with this Incantation.
+  //  */
+  // weatherName: string
+
+  // /**
+  //  * The gesture associated with this Incantation.
+  //  */
+  // gesture: Gesture
 
   /**
    * The x position as a pixel value.
