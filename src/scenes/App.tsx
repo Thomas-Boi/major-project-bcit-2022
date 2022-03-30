@@ -35,7 +35,7 @@ class App extends React.Component<any, IState> {
   constructor(props: any) {
     super(props)
     this.state = {
-      curScene: SCENES.EATHER      
+      curScene: SCENES.MENU      
     }
 
     // connect the pipeline

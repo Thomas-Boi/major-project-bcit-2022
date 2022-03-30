@@ -40,11 +40,11 @@ export function getVid(vidName: string) {
 
 /**
  * Get a random value from the array.
- * If the array is empty, return null.
+ * If the array is empty, throw an error.
  * @param array - an array.
  */
  export function getRandomValue(array: Array<any>): any  {
-	 if (array.length === 0) return null
+	if (array.length === 0) throw new Error("Array is empty, can't pick a value from here.")
   let index = Math.floor(Math.random() * array.length);
   return array[index]; 
 }

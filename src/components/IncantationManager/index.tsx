@@ -7,11 +7,33 @@ import two from "assets/img/two.png"
 import * as Gesture from "services/Gesture"
 import {getRandomInt, getRandomValue, areRangesOverlap} from "services/util"
 
+interface IProps {
+  /**
+   * A callback that will play a video.
+   */
+  playVideoCallback: (vidName: string) => void
+
+  /**
+   * The current gesture that the user is making.
+   */
+	curGesture: Gesture.Gesture | null
+
+	/**
+	 * The time when the user started the gesture.
+	 */
+	gestureStartTime: number
+
+  /**
+   * An object mapping the gesture image to its name.
+   */
+  vidIncantations: Object
+}
+
 interface IState {
   /**
    * The items we will be rendering on the screen.
    */
-  items: Array<IncantationData>
+  activeIncants: Array<IncantationData>
 }
 
 /**
@@ -48,29 +70,32 @@ export const gestures = {
   [Gesture.TWO.name]: two
 }
 
-export default class IncantationManager extends React.Component<any, IState> {
+export default class IncantationManager extends React.Component<IProps, IState> {
   /**
    * Store the interval object so we can remove it when dismount.
    */
   intervalObj: ReturnType<typeof setInterval>
 
-	constructor(props: any) {
+	constructor(props: IProps) {
 		super(props)
     // init all the incantations we will have and set them to not appear
 		this.state = {
-			items: []
+			activeIncants: []
     }
 
+    let possibleIncants = Object.keys(this.props.vidIncantations).map(vidName => {
+      
+    })
   }
 
   render() {
-    let items = this.state.items.map((data, index) => {
+    let items = this.state.activeIncants.map((data, index) => {
       return <Incantation key={index} {...data} />
     })
 
     return (
       <div className={style.container}>
-        {items}
+          {items}
       </div>
     )
   }
@@ -84,15 +109,15 @@ export default class IncantationManager extends React.Component<any, IState> {
 
   spawn = () => {
     // check if we can add more incantation
-    if (this.state.items.length >= MAX_INCANTATION_AMOUNT) {
+    if (this.state.activeIncants.length >= MAX_INCANTATION_AMOUNT) {
       return
     }
 
     // randomly spawn an incantation
     if (getRandomInt(1, 10) <= SPAWN_PROBABILITY_NUM) {
-      let copy = this.state.items.slice()
+      let copy = this.state.activeIncants.slice()
       copy.push(this.createNewIncantation())
-      this.setState({items: copy})
+      this.setState({activeIncants: copy})
     }
   }
 
@@ -102,7 +127,7 @@ export default class IncantationManager extends React.Component<any, IState> {
    */
   createNewIncantation(): IncantationData {
     let activeImgUrl: Array<string> = []
-    for (let data of this.state.items) {
+    for (let data of this.state.activeIncants) {
       activeImgUrl.push(data.imgUrl)
     }
 
@@ -112,7 +137,7 @@ export default class IncantationManager extends React.Component<any, IState> {
     // first, just pick a random coord
     let possibleX = getRandomInt(0, SPAWN_X_UPPER_BOUND)
     let possibleY = getRandomInt(0, SPAWN_Y_UPPER_BOUND)
-    for (let {x, y} of this.state.items) {
+    for (let {x, y} of this.state.activeIncants) {
       // test whether the dimensions would overlap
       let overlapped = areRangesOverlap(x, x + INCANTATION_SIZE, possibleX, possibleX + INCANTATION_SIZE) 
         && areRangesOverlap(y, y + INCANTATION_SIZE, possibleY, possibleY + INCANTATION_SIZE)
@@ -138,7 +163,7 @@ export default class IncantationManager extends React.Component<any, IState> {
    * @return true if the incantation is on the screen, else false.
    */
   isIncantationActive(gestureUrl: string): boolean {
-    for (let data of this.state.items) {
+    for (let data of this.state.activeIncants) {
       if (data.imgUrl === gestureUrl) return true
     }
     return false
@@ -150,9 +175,9 @@ export default class IncantationManager extends React.Component<any, IState> {
    */
   removeIncantation(key: number) {
     // make a copy then modify it
-    let copy = this.state.items.slice()
+    let copy = this.state.activeIncants.slice()
     copy.splice(key, 1) // remove one item at this space
-    this.setState({items: copy})
+    this.setState({activeIncants: copy})
   }
 
   /**

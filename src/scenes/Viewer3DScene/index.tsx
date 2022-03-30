@@ -145,8 +145,8 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	 * Handle the onResults event of the Hands tracker.
 	 * @param results the result of the data parsing.
 	 */
-	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
-		if (!(hand && prevHand)) {
+	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture | null, gestureStartTime: number) => {
+		if (!(hand && prevHand) || !curGesture) {
 			// for prevHand
 			// if there's a none flash in between
 			// two valid gestures, the 2nd valid gesture will have
