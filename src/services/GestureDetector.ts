@@ -152,10 +152,9 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 	/**
 	 * Add an observer to the HandTracker.
 	 * @param observer a callback function matching the required signature.
-	 * @param key the name of the observer. Default is
-	 * the observer function's name.
+	 * @param key the name of the observer. 
 	 */
-	addObserver(observer: GestureDetectorObserver, key: String=observer.name) {
+	addObserver(observer: GestureDetectorObserver, key: String) {
 		this.observers.set(key, observer)
 	}
 
@@ -165,8 +164,7 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 	 * either the function or the key that was used to add the observer.
 	 * @return true if the object was deleted. Else, false.
 	 */
-	removeObserver(key: String | Function) {
-		if (typeof key == "function") key = key.name
+	removeObserver(key: String) {
 		return this.observers.delete(key)
 	}
 }

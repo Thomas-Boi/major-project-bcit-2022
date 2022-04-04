@@ -67,7 +67,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 		// this.props.gestureDetector.addObserver(this.removeInstruction)
 		// this.props.gestureDetector.addGesturesToDetect([Gesture.FIVE])
 
-		this.props.gestureDetector.addObserver(this.update)
+		this.props.gestureDetector.addObserver(this.update, this.update.name)
 		this.props.gestureDetector.addGesturesToDetect(Object.values(vidIncantations))
 		
 	}

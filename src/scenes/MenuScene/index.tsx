@@ -7,6 +7,7 @@ import one from "assets/img/one.png"
 import two from "assets/img/two.png"
 
 const GESTURE_TRIGGER_TIME_MILISEC = 2500
+const updateKeyName = "menuUpdate"
 
 export default class MenuScene extends React.Component<SceneProps> {
 
@@ -14,7 +15,7 @@ export default class MenuScene extends React.Component<SceneProps> {
 		super(props)
 
 		// set up the control to move to the other scenes
-		this.props.gestureDetector.addObserver(this.update)
+		this.props.gestureDetector.addObserver(this.update, updateKeyName)
 		this.props.gestureDetector.removeAllGesturesToDetect()
 		this.props.gestureDetector.addGesturesToDetect([ONE, TWO])
 	}
@@ -34,11 +35,10 @@ export default class MenuScene extends React.Component<SceneProps> {
 	 * Remove the listeners.
 	 */
 	componentWillUnmount() {
-		this.props.gestureDetector.removeObserver(this.update)
+		this.props.gestureDetector.removeObserver(updateKeyName)
 	}
 		
 	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture | null, gestureStartTime: number) => {
-		console.log(curGesture)
 		if (!(hand && prevHand)) {
 			// for prevHand
 			// if there's a none flash in between

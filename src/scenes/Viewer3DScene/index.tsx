@@ -35,6 +35,9 @@ const SCALE_MULTIPLIER = 4
 const RESET_COUNTER_THRESHOLD_MILISEC = 1000
 const START_THRESHOLD_MILISEC = 600
 
+const removeKeyName = "3Dremove"
+const updateKeyName = "3Dupdate"
+
 export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	/**
 	 * A BABYLON Mesh object.
@@ -57,7 +60,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		/**
 		 * First step: add a check for removing the instruction.
 		 */
-		this.props.gestureDetector.addObserver(this.removeInstruction)
+		this.props.gestureDetector.addObserver(this.removeInstruction, removeKeyName)
 		this.props.gestureDetector.addGesturesToDetect([Gesture.FIVE])
 	}
 
@@ -117,14 +120,14 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		window.removeEventListener("resize", this.resize)
 		this.engine.dispose()
 
-		this.props.gestureDetector.removeObserver(this.update)
+		this.props.gestureDetector.removeObserver(updateKeyName)
 	}
 
 	removeInstruction = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
 		if (curGesture === Gesture.FIVE) {
 			if (Date.now() - gestureStartTime >= START_THRESHOLD_MILISEC) {
-				this.props.gestureDetector.removeObserver(this.removeInstruction)
-				this.props.gestureDetector.addObserver(this.update)
+				this.props.gestureDetector.removeObserver(removeKeyName)
+				this.props.gestureDetector.addObserver(this.update, updateKeyName)
 				// update the gestures to look for
 				this.props.gestureDetector.removeAllGesturesToDetect()
 				this.props.gestureDetector.addGesturesToDetect([
