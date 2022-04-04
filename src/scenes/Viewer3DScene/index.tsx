@@ -151,14 +151,14 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	 * Handle the onResults event of the Hands tracker.
 	 * @param results the result of the data parsing.
 	 */
-	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture | null, gestureStartTime: number) => {
-		if (!(hand && prevHand) || !curGesture) {
+	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
+		let detected = true
+		if (!(hand && prevHand)) {
 			// for prevHand
 			// if there's a none flash in between
 			// two valid gestures, the 2nd valid gesture will have
 			// a null prevHand => this checks avoid it
-			this.setState({detected: false, gestureName: "NONE"})
-			return
+			detected = false
 		}
 		else if (curGesture === Gesture.GRAB_FIST) {
 			this.translate(hand, prevHand)
@@ -180,7 +180,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		}
 
 		// this is for valid detections
-		this.setState({detected: true, gestureName: curGesture.name})
+		this.setState({detected, gestureName: curGesture.name})
 	}
 
 	/**

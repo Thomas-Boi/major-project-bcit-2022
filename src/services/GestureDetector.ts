@@ -62,6 +62,7 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 		// make a new hand or just use this.hand after we are done.
 		this.prevHand = null
 
+		this.confirmedGesture = Gesture.NONE
 		this.gestureCounter = 0
 		this.gesturesToDetect = []
 		this.observers = new Map()
@@ -110,7 +111,7 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 		// check if the result is usable
 		// if not, mark this.prevHand to null to signify
 		// we can't do any calculations.
-		let newGesture: Gesture.Gesture = null
+		let newGesture: Gesture.Gesture = Gesture.NONE
 		if (!results || results.multiHandLandmarks.length === 0) {
 			this.hand = null
 		}

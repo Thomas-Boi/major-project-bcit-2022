@@ -51,4 +51,4 @@ export type HandTrackerObserver = (results: Results | null) => (void)
  * @param curGesture, the gesture the user is making now.
  * @param gestureStartTime, the time when the gesture started.
  */
-export type GestureDetectorObserver = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture | null, gestureStartTime: number) => void
+export type GestureDetectorObserver = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture, gestureStartTime: number) => void

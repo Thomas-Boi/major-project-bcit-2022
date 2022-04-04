@@ -72,7 +72,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 		
 	}
 
-	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture | null, gestureStartTime: number) => {
+	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
 		if (this.videoPlaying) {
 			return
 		}

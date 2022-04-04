@@ -204,6 +204,12 @@ export const FOUR = new Gesture("FOUR", CLOSED_THUMB, UP_FINGER, UP_FINGER, UP_F
 export const FIVE = new Gesture("FIVE", OUTWARD_THUMB, UP_FINGER, UP_FINGER, UP_FINGER, UP_FINGER)
 
 /**
+ * Empty gesture that's not supposed to match anything. Shouldn't use 
+ * this to check for gesture.
+ */
+export const NONE = new Gesture("NONE")
+
+/**
  * Gestures specific to 3D viewer
  */
 
