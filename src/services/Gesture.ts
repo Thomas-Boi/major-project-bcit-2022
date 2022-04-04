@@ -196,7 +196,6 @@ const THUMBS_UP_THUMB: FingerState = {
  * Some preset common gestures.
  */
 export const CLOSED_FIST = new Gesture("CLOSED_FIST")
-export const GRAB_FIST = new Gesture("GRAB_FIST", CLOSED_THUMB, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER)
 export const ONE = new Gesture("ONE", CLOSED_THUMB, UP_FINGER)
 export const TWO = new Gesture("TWO", CLOSED_THUMB, UP_FINGER, UP_FINGER)
 export const THREE = new Gesture("THREE", CLOSED_THUMB, UP_FINGER, UP_FINGER, UP_FINGER)
@@ -205,9 +204,15 @@ export const FIVE = new Gesture("FIVE", OUTWARD_THUMB, UP_FINGER, UP_FINGER, UP_
 
 /**
  * Empty gesture that's not supposed to match anything. Shouldn't use 
- * this to check for gesture.
+ * this to check as an gesture.
  */
 export const NONE = new Gesture("NONE")
+
+/**
+ * Empty gesture that signify an out of bound hand. Shouldn't use 
+ * this to check as an gesture.
+ */
+export const NOT_SEEN = new Gesture("NOT SEEN")
 
 /**
  * Gestures specific to 3D viewer
@@ -216,3 +221,4 @@ export const NONE = new Gesture("NONE")
 export const ROTATE_X = new Gesture("ROTATE_X", CLOSED_THUMB, ROTATE_X_INDEX_FINGER)
 export const THUMBS_UP = new Gesture("THUMBS_UP", THUMBS_UP_THUMB, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER)
 export const L_SHAPE = new Gesture("L_SHAPE", OUTWARD_THUMB, UP_FINGER, GENERAL_CLOSED_FINGER, GENERAL_CLOSED_FINGER, GENERAL_CLOSED_FINGER)
+export const GRAB_FIST = new Gesture("GRAB_FIST", CLOSED_THUMB, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER)

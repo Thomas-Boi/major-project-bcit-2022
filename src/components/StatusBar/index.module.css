@@ -1,6 +1,6 @@
 .statuses {
   display: inline-flex;
-  column-gap: 3vw;
+  column-gap: 1vw;
   align-items: center;
   position: fixed;
   top: 5vh;

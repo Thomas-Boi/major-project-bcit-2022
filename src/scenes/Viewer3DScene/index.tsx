@@ -17,12 +17,7 @@ interface IState {
 	/**
 	 * The name of the gesture to display on the screen.
 	 */
-	gestureName: string
-
-	/**
-	 * Whether the gesture was detectable.
-	 */
-	detected: boolean
+	gesture: Gesture.Gesture
 }
 
 // for interacting with the cube
@@ -53,8 +48,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		super(props)
 		this.state = {
 			showsInstruction: true,
-			gestureName: "NONE",
-			detected: false
+			gesture: Gesture.NONE
 		}
 
 		/**
@@ -71,7 +65,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 					this.state.showsInstruction && 
 						<Viewer3DInstruction />
 				}
-				<StatusBar gestureName={this.state.gestureName} detected={this.state.detected}/>
+				<StatusBar gesture={this.state.gesture}/>
 				<canvas id='canvas'></canvas>
 			</div>
 		)
@@ -141,10 +135,8 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 
 				this.setState({showsInstruction: false})
 			}
-			this.setState({detected: true, gestureName: curGesture.name})
-			return
 		}
-		this.setState({detected: false, gestureName: "NONE"})
+		this.setState({gesture: curGesture})
 	}
 
 	/**
@@ -152,13 +144,12 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	 * @param results the result of the data parsing.
 	 */
 	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
-		let detected = true
 		if (!(hand && prevHand)) {
+			// do nothing, just end the if checks early
 			// for prevHand
 			// if there's a none flash in between
 			// two valid gestures, the 2nd valid gesture will have
 			// a null prevHand => this checks avoid it
-			detected = false
 		}
 		else if (curGesture === Gesture.GRAB_FIST) {
 			this.translate(hand, prevHand)
@@ -180,7 +171,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		}
 
 		// this is for valid detections
-		this.setState({detected, gestureName: curGesture.name})
+		this.setState({gesture: curGesture})
 	}
 
 	/**

@@ -114,6 +114,7 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 		let newGesture: Gesture.Gesture = Gesture.NONE
 		if (!results || results.multiHandLandmarks.length === 0) {
 			this.hand = null
+			newGesture = Gesture.NOT_SEEN
 		}
 		else {
 			// valid data => start analyzing the shape
