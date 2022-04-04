@@ -98,7 +98,11 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 		// check and see the state of the Controller, which is
 		// the current hand gesture of the user.
 		this.detectShape(results)
-		this.observers.forEach(observer => observer(this.hand, this.prevHand, this.confirmedGesture, this.gestureStartTime))
+
+		// using forEach allows JS to interrupt the update chain => use a for loop instead
+		for (let observer of this.observers.values()) {
+			observer(this.hand, this.prevHand, this.confirmedGesture, this.gestureStartTime)
+		}
 	}
 
 	/**

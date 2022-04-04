@@ -83,18 +83,18 @@ export default class Hand {
 	 * @returns whether the hand is making the gesture passed in. 
 	 */
 	matches(gesture: Gesture): boolean {
-		// if (gesture.name == "five") {
-		// 	console.log("Checking gesture:", gesture.name)
-		// }
+		if (gesture.name == "THUMBS UP") {
+			console.log("Checking gesture:", gesture.name)
+		}
 		for (let fingerName of this.fingerNames) {
 			let finger = this[fingerName] as Finger
 			let fingerState = gesture[fingerName] as FingerState 
 
 			if (fingerState.isStraight !== null) {
 				if (fingerState.isStraight !== finger.isStraight) {
-					// if (gesture.name == "GRAB_FIST") {
-					// 	console.log("Failed at finger straightness: ", fingerName, finger.isStraight)
-					// }
+					if (gesture.name == "THUMBS UP") {
+						console.log("Failed at finger straightness: ", fingerName, finger.isStraight)
+					}
 					return false
 				}
 			}
@@ -106,10 +106,10 @@ export default class Hand {
 					direction => finger.direction.equals(direction)) 
 
 			if (fingerState.direction instanceof ValidDirections && searchResult === undefined) {
-				// if (gesture.name == "GRAB_FIST") console.log("Failed at finger direction: ", {
-				// 	fingerName,
-				// 	direction: finger.direction
-				// })
+				if (gesture.name == "THUMBS UP") console.log("Failed at finger direction: ", {
+					fingerName,
+					direction: finger.direction
+				})
 				return false // doesn't match any => finger failed => whole gesture fails
 			}
 			else if (fingerState.direction instanceof InvalidDirections && searchResult !== undefined) {

@@ -18,6 +18,10 @@ interface IState {
 }
 
 export default class MenuScene extends React.Component<SceneProps, IState> {
+	/**
+	 * Whether the scene is unmounted
+	 */
+	isUnmounted: boolean
 
 	constructor(props: SceneProps) {
 		super(props)
@@ -30,6 +34,7 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 		this.props.gestureDetector.addObserver(this.update, updateKeyName)
 		this.props.gestureDetector.removeAllGesturesToDetect()
 		this.props.gestureDetector.addGesturesToDetect([ONE, TWO])
+		this.isUnmounted = false
 	}
 
 	render() {
@@ -48,10 +53,12 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 	 * Remove the listeners.
 	 */
 	componentWillUnmount() {
+		this.isUnmounted = true
 		this.props.gestureDetector.removeObserver(updateKeyName)
 	}
 		
 	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture, gestureStartTime: number) => {
+		this.setState({gesture: curGesture})
 		if (!(hand && prevHand)) {
 			// do nothing, just end the if chain early
 			// for prevHand
@@ -69,9 +76,6 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 				this.props.loadSceneCallback("EATHER")
 			}
 		}
-
-		this.setState({gesture: curGesture})
-
 	}
 
 }
