@@ -2,14 +2,16 @@ import React from 'react'
 import InputSource from "components/InputSource"
 import HandTracker from "services/HandTracker"
 import GestureDetector from 'services/GestureDetector'
+import LoadingScene from './LoadingScene'
 import MenuScene from './MenuScene'
 import Viewer3DScene from './Viewer3DScene'
 import EatherScene from './EatherScene'
 
 const SCENES =  {
-  "MENU": 0,
-  "3D": 1,
-  "EATHER": 2
+  "LOADING": 0,
+  "MENU": 1,
+  "3D": 2,
+  "EATHER": 3
 }
 
 interface IState {
@@ -32,10 +34,15 @@ class App extends React.Component<any, IState> {
    */
   gestureDetector: GestureDetector
 
+  /**
+   * Whether the screen is facing the user.
+   */
+  isScreenFacingUser: boolean
+
   constructor(props: any) {
     super(props)
     this.state = {
-      curScene: SCENES.MENU      
+      curScene: SCENES.LOADING      
     }
 
     // connect the pipeline
@@ -46,16 +53,20 @@ class App extends React.Component<any, IState> {
     this.gestureDetector = new GestureDetector()
     this.handTracker.addObserver(this.gestureDetector.onResultsCallback)
 
+    this.isScreenFacingUser = true
   }
 
   render() {
-    // default scene is the menu 
-    let scene = <MenuScene isScreenFacingUser={true} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
-    if (this.state.curScene === 1) {
-      scene = <Viewer3DScene isScreenFacingUser={true} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
+    // default scene is the loading scene 
+    let scene = <LoadingScene isScreenFacingUser={this.isScreenFacingUser} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
+    if (this.state.curScene === SCENES['MENU']) {
+      scene = <MenuScene isScreenFacingUser={this.isScreenFacingUser} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
     }
-    else if (this.state.curScene === 2) {
-      scene = <EatherScene isScreenFacingUser={true} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
+    else if (this.state.curScene === SCENES['3D']) {
+      scene = <Viewer3DScene isScreenFacingUser={this.isScreenFacingUser} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
+    }
+    else if (this.state.curScene === SCENES['EATHER']) {
+      scene = <EatherScene isScreenFacingUser={this.isScreenFacingUser} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
     }
 
     // after the input source is mounted, it will start the pipeline process
@@ -67,7 +78,7 @@ class App extends React.Component<any, IState> {
     );
   }
 
-  loadScene = (sceneName: "MENU"|"3D"|"EATHER") => {
+  loadScene = (sceneName: "MENU"|"3D"|"EATHER"|"LOADING") => {
     this.setState({curScene: SCENES[sceneName]})
   }
 }

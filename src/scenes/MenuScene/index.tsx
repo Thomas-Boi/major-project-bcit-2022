@@ -29,8 +29,16 @@ export default class MenuScene extends React.Component<SceneProps> {
 			</div>
 		)
 	}
+
+	/**
+	 * Remove the listeners.
+	 */
+	componentWillUnmount() {
+		this.props.gestureDetector.removeObserver(this.update)
+	}
 		
 	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture | null, gestureStartTime: number) => {
+		console.log(curGesture)
 		if (!(hand && prevHand)) {
 			// for prevHand
 			// if there's a none flash in between

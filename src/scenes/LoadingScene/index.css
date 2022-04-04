@@ -1,0 +1,45 @@
+.loadingScreen {
+  /* Flip the text horizontally by default*/
+  /* transform: rotateY(180deg); */
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  background-color: black;
+  text-align: center;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingUI {
+  position: relative;
+  width: min-content;
+  justify-self: center;
+  display: grid;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 25vw;
+  height: 25vw;
+  animation: spin 2s linear infinite;
+  border: 4vw solid white;
+  border-top: 4vw solid black;
+  border-radius: 50%;
+  margin: auto;
+}
+
+.spinnerText {
+  width: 100%;
+  position: absolute;
+  align-self: center;
+  font-size: 3.5rem;
+}

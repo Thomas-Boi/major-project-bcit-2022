@@ -113,8 +113,11 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	 * Shut down the BabylonJS engine.
 	 */
 	componentWillUnmount(): void {
+		// babylon js stuff
 		window.removeEventListener("resize", this.resize)
 		this.engine.dispose()
+
+		this.props.gestureDetector.removeObserver(this.update)
 	}
 
 	removeInstruction = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
