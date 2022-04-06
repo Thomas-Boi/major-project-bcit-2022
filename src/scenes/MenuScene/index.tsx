@@ -7,7 +7,7 @@ import StatusBar from "components/StatusBar";
 import one from "assets/img/one.png"
 import two from "assets/img/two.png"
 
-const GESTURE_TRIGGER_TIME_MILISEC = 700
+const GESTURE_TRIGGER_TIME_MILISEC = 1000
 const updateKeyName = "menuUpdate"
 
 interface IState {
@@ -15,6 +15,11 @@ interface IState {
 	 * The name of the gesture to display on the screen.
 	 */
 	gesture: Gesture
+
+	/**
+	 * The progress for the progress bar in the StatusBar component.
+	 */
+	progress: undefined | number
 }
 
 /**
@@ -35,7 +40,8 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 		super(props)
 
 		this.state = {
-			gesture: NONE
+			gesture: NONE,
+			progress: undefined
 		}
 
 		// set up the control to move to the other scenes
@@ -48,7 +54,7 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 	render() {
 		return (
 			<div className={styles.scene}>
-				<StatusBar gesture={this.state.gesture} name={gestureCommandObj[this.state.gesture.name]}/>
+				<StatusBar gesture={this.state.gesture} name={gestureCommandObj[this.state.gesture.name]} progress={this.state.progress}/>
 				<img className={styles.img} src={one} alt='One: select 3D Viewer'/>
 				<img className={styles.img} src={two} alt='Two: eather app'/>
 				<div className={styles.text}>3D Viewer</div>
@@ -75,14 +81,18 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 			// a null prevHand => this checks avoid it
 		}
 		else if (curGesture === ONE) {
+			let progress = (Date.now() - gestureStartTime) / GESTURE_TRIGGER_TIME_MILISEC
 			if (Date.now() - gestureStartTime >= GESTURE_TRIGGER_TIME_MILISEC) {
 				this.props.loadSceneCallback("3D")
 			}
+			this.setState({progress})
 		}
 		else if (curGesture === TWO) {
+			let progress = (Date.now() - gestureStartTime) / GESTURE_TRIGGER_TIME_MILISEC
 			if (Date.now() - gestureStartTime >= GESTURE_TRIGGER_TIME_MILISEC) {
 				this.props.loadSceneCallback("EATHER")
 			}
+			this.setState({progress})
 		}
 	}
 
