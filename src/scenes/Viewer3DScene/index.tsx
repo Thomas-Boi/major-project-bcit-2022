@@ -203,7 +203,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		let horizontalDelta = getDelta(hand.index.joints[FINGER_INDICES.TIP].x, prevHand.index.joints[FINGER_INDICES.TIP].x)
 		if (!this.props.isScreenFacingUser) horizontalDelta *= -1
 
-		this.mesh.rotate(BABYLON.Axis.Y, ROTATE_MULTIPLIER * horizontalDelta)
+		this.mesh.rotate(BABYLON.Axis.Y, ROTATE_MULTIPLIER * horizontalDelta, BABYLON.Space.WORLD)
 	}
 
 	/**

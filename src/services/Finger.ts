@@ -140,21 +140,6 @@ export class Finger {
 		let dip = new Vector3(this.joints[FINGER_INDICES.DIP].x, this.joints[FINGER_INDICES.DIP].y, this.joints[FINGER_INDICES.DIP].z) 
 		let dipOnLine = fitOnLine(dip, tip, line, variation)
 		this.isStraight = pipOnLine && dipOnLine
-
-		// positive is downward for media pipe (jpg or png protocol or JS)
-		// if (tip.y > dip.y) {
-		// 	console.log("downward < tip < dip < upward", {
-		// 		"tipY": tip.y,
-		// 		"mcpY": dip.y,
-		// 	})
-		// }
-		// else {
-		// 	console.log("downward < dip < tip < upward", {
-		// 		"tipY": tip.y,
-		// 		"mcpY": dip.y,
-		// 	})
-
-		// }
 	}
 
 	/**
@@ -171,7 +156,7 @@ export class Finger {
 		// then finally, check z.
 
 		let angleRad = Vector3.GetAngleBetweenVectors(
-			new Vector3(line.x ,line.y, 0), Vector3.Right(), Vector3.Forward())
+			new Vector3(line.x ,line.y, 0), Vector3.Right(), DIRECTION.TOWARD_SCREEN())
 
 		let absAngleRad = Math.abs(angleRad)
 

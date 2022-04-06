@@ -146,6 +146,19 @@ const ROTATE_X_INDEX_FINGER: FingerState = {
 		// Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
 	)
 }
+
+/**
+ * The state of a closed non-thumb finger for the rotate x gesture.
+ */
+const ROTATE_X_CLOSED_FINGER: FingerState = {
+	isStraight: false,
+	direction: new ValidDirections(
+		Vector3.Down(),
+		Vector3.Left(),
+		Vector3.Left().add(Vector3.Down())
+	)
+}
+
 ///////////////////////////// THUMBS //////////////////////////////
 /**
  * The state of an opened thumb pointing outwards from palm.
@@ -175,6 +188,19 @@ const CLOSED_THUMB: FingerState = {
 		// Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
 		// Vector3.Up().add(DIRECTION.AWAY_FROM_SCREEN()),
 		// Vector3.Up().add(DIRECTION.TOWARD_SCREEN())
+	)
+}
+
+/**
+ * The thumb shape for rotate x.
+ */
+const ROTATE_X_THUMB: FingerState = {
+	isStraight: null,
+	direction: new ValidDirections(
+		Vector3.Right(),
+		Vector3.Right().add(Vector3.Up()),
+		Vector3.Right().add(Vector3.Down()),
+		Vector3.Up()
 	)
 }
 
@@ -219,7 +245,7 @@ export const NOT_SEEN = new Gesture("NOT SEEN")
  * Gestures specific to 3D viewer
  */
 
-export const ROTATE_X = new Gesture("ROTATE X", CLOSED_THUMB, ROTATE_X_INDEX_FINGER)
+export const ROTATE_X = new Gesture("ROTATE X", ROTATE_X_THUMB, ROTATE_X_INDEX_FINGER, ROTATE_X_CLOSED_FINGER, ROTATE_X_CLOSED_FINGER, ROTATE_X_CLOSED_FINGER)
 export const THUMBS_UP = new Gesture("THUMBS UP", THUMBS_UP_THUMB, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER)
-export const L_SHAPE = new Gesture("L SHAPE", OUTWARD_THUMB, UP_FINGER, GENERAL_CLOSED_FINGER, GENERAL_CLOSED_FINGER, GENERAL_CLOSED_FINGER)
+export const L_SHAPE = new Gesture("L SHAPE", OUTWARD_THUMB, UP_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER)
 export const GRAB_FIST = new Gesture("GRAB FIST", CLOSED_THUMB, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER)
