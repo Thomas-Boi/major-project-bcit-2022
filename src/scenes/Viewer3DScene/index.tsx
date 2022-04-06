@@ -18,6 +18,11 @@ interface IState {
 	 * The name of the gesture to display on the screen.
 	 */
 	gesture: Gesture.Gesture
+
+	/**
+	 * The progress for the progress bar in the StatusBar component.
+	 */
+	progress: undefined | number
 }
 
 // for interacting with the cube
@@ -61,7 +66,8 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		super(props)
 		this.state = {
 			showsInstruction: true,
-			gesture: Gesture.NONE
+			gesture: Gesture.NONE,
+			progress: undefined
 		}
 
 		/**
@@ -80,7 +86,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 						<Viewer3DInstruction />
 				}
 
-				<StatusBar gesture={this.state.gesture} name={gestureCommandObj[this.state.gesture.name]}/>
+				<StatusBar gesture={this.state.gesture} name={gestureCommandObj[this.state.gesture.name]} progress={this.state.progress}/>
 				<canvas id='canvas'></canvas>
 			</div>
 		)
@@ -179,10 +185,11 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 			this.scale(hand, prevHand)
 		}
 		else if (curGesture === Gesture.L_SHAPE) {
+			let progress = (Date.now() - gestureStartTime) / RESET_COUNTER_THRESHOLD_MILISEC
 			if (Date.now() - gestureStartTime >= RESET_COUNTER_THRESHOLD_MILISEC) {
 				this.reset()
 			}
-
+			this.setState({progress})
 		}
 
 		// this is for valid detections
