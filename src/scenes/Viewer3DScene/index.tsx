@@ -55,6 +55,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		 * First step: add a check for removing the instruction.
 		 */
 		this.props.gestureDetector.addObserver(this.removeInstruction, removeKeyName)
+		this.props.gestureDetector.removeAllGesturesToDetect()
 		this.props.gestureDetector.addGesturesToDetect([Gesture.FIVE])
 	}
 

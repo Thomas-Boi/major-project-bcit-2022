@@ -140,6 +140,21 @@ export class Finger {
 		let dip = new Vector3(this.joints[FINGER_INDICES.DIP].x, this.joints[FINGER_INDICES.DIP].y, this.joints[FINGER_INDICES.DIP].z) 
 		let dipOnLine = fitOnLine(dip, tip, line, variation)
 		this.isStraight = pipOnLine && dipOnLine
+
+		// positive is downward for media pipe (jpg or png protocol or JS)
+		// if (tip.y > dip.y) {
+		// 	console.log("downward < tip < dip < upward", {
+		// 		"tipY": tip.y,
+		// 		"mcpY": dip.y,
+		// 	})
+		// }
+		// else {
+		// 	console.log("downward < dip < tip < upward", {
+		// 		"tipY": tip.y,
+		// 		"mcpY": dip.y,
+		// 	})
+
+		// }
 	}
 
 	/**
@@ -178,18 +193,19 @@ export class Finger {
 			this.direction.addInPlace(Vector3.Down())
 		}
 
+		/* Remove for now cause z-axis is not too accurate*/
 		// now check the z-axis by checking z-y axis
 		// z-axis can reuse the angle for x-axis
-		let zAbsAngleRad = Math.abs(Vector3.GetAngleBetweenVectors(
-			new Vector3(0, line.y, line.z), DIRECTION.AWAY_FROM_SCREEN(), Vector3.Left()))
+		// let zAbsAngleRad = Math.abs(Vector3.GetAngleBetweenVectors(
+		// 	new Vector3(0, line.y, line.z), DIRECTION.AWAY_FROM_SCREEN(), Vector3.Left()))
 
-		if (zAbsAngleRad < NEAR_RIGHT_AXIS_BOUND) {
-			this.direction.addInPlace(DIRECTION.AWAY_FROM_SCREEN())	
-		}
-		// if angle is > 120, we know it's nearer to the left hand side
-		else if (zAbsAngleRad > NEAR_LEFT_AXIS_BOUND) {
-			this.direction.addInPlace(DIRECTION.TOWARD_SCREEN())	
-		}
+		// if (zAbsAngleRad < NEAR_RIGHT_AXIS_BOUND) {
+		// 	this.direction.addInPlace(DIRECTION.AWAY_FROM_SCREEN())	
+		// }
+		// // if angle is > 120, we know it's nearer to the left hand side
+		// else if (zAbsAngleRad > NEAR_LEFT_AXIS_BOUND) {
+		// 	this.direction.addInPlace(DIRECTION.TOWARD_SCREEN())	
+		// }
 
 	}
 }

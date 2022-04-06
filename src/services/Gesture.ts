@@ -1,5 +1,5 @@
 import { Vector3 } from "babylonjs"
-import { DIRECTION } from "./handsInfo"
+// import { DIRECTION } from "./handsInfo"
 
 /**
  * NOTE: All gestures are created from the POV of the viewer.
@@ -104,7 +104,7 @@ const GRAB_CLOSED_FINGER: FingerState = {
 	isStraight: false,
 	direction: new ValidDirections(
 		Vector3.Down(),
-		Vector3.Down().add(DIRECTION.AWAY_FROM_SCREEN())
+		// Vector3.Down().add(DIRECTION.AWAY_FROM_SCREEN())
 	)
 }
 
@@ -116,10 +116,10 @@ const THUMBS_UP_CLOSED_FINGER: FingerState = {
 	direction: new ValidDirections(
 		Vector3.Right(),
 		Vector3.Right().add(Vector3.Down()),
-		Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
+		// Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
 		Vector3.Down(),
-		Vector3.Down().add(DIRECTION.AWAY_FROM_SCREEN()),
-		Vector3.Right().add(Vector3.Down()).add(DIRECTION.AWAY_FROM_SCREEN())
+		// Vector3.Down().add(DIRECTION.AWAY_FROM_SCREEN()),
+		// Vector3.Right().add(Vector3.Down()).add(DIRECTION.AWAY_FROM_SCREEN())
 	)
 }
 
@@ -143,8 +143,7 @@ const ROTATE_X_INDEX_FINGER: FingerState = {
 	isStraight: true,
 	direction: new ValidDirections(
 		Vector3.Right(),
-		Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
-		Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN())
+		// Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
 	)
 }
 ///////////////////////////// THUMBS //////////////////////////////
@@ -157,9 +156,9 @@ const OUTWARD_THUMB: FingerState = {
 	direction: new ValidDirections(
 		Vector3.Right(),
 		Vector3.Right().add(Vector3.Up()),
-		Vector3.Right().add(Vector3.Up()).add(DIRECTION.AWAY_FROM_SCREEN()),
-		Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
-		DIRECTION.AWAY_FROM_SCREEN()
+		// Vector3.Right().add(Vector3.Up()).add(DIRECTION.AWAY_FROM_SCREEN()),
+		// Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
+		// DIRECTION.AWAY_FROM_SCREEN()
 	)
 }
 
@@ -171,10 +170,10 @@ const CLOSED_THUMB: FingerState = {
 	direction: new InvalidDirections(
 		Vector3.Right(),
 		Vector3.Right().add(Vector3.Up()),
-		Vector3.Right().add(Vector3.Up()).add(DIRECTION.AWAY_FROM_SCREEN()),
-		Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
-		Vector3.Up().add(DIRECTION.AWAY_FROM_SCREEN()),
-		Vector3.Up().add(DIRECTION.TOWARD_SCREEN())
+		// Vector3.Right().add(Vector3.Up()).add(DIRECTION.AWAY_FROM_SCREEN()),
+		// Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
+		// Vector3.Up().add(DIRECTION.AWAY_FROM_SCREEN()),
+		// Vector3.Up().add(DIRECTION.TOWARD_SCREEN())
 	)
 }
 
@@ -185,7 +184,7 @@ const THUMBS_UP_THUMB: FingerState = {
 	isStraight: true,
 	direction: new ValidDirections(
 		Vector3.Up(),
-		Vector3.Up().add(DIRECTION.TOWARD_SCREEN()),
+		// Vector3.Up().add(DIRECTION.TOWARD_SCREEN()),
 	)
 }
 

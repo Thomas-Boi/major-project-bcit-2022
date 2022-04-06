@@ -7,7 +7,7 @@ import StatusBar from "components/StatusBar";
 import one from "assets/img/one.png"
 import two from "assets/img/two.png"
 
-const GESTURE_TRIGGER_TIME_MILISEC = 2500
+const GESTURE_TRIGGER_TIME_MILISEC = 700
 const updateKeyName = "menuUpdate"
 
 interface IState {

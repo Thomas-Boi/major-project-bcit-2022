@@ -7,13 +7,9 @@
  * Default to 7 decimal place.
  * @returns 
  */
-export function getDelta(a: number, b: number, decimalPlace: number=7) {
+export function getDelta(a: number, b: number, decimalPlace: number=7): number {
 	let delta = a - b
-
-	// round to x decimal place, see https://stackoverflow.com/a/11832950/11683637
-	let decimalConvertor = 10 ** decimalPlace
-	delta = Math.round(delta * decimalConvertor) / decimalConvertor
-	return delta
+	return parseFloat(delta.toFixed(7))
 }
 
 /**
