@@ -156,6 +156,7 @@ const OUTWARD_THUMB: FingerState = {
 	direction: new ValidDirections(
 		Vector3.Right(),
 		Vector3.Right().add(Vector3.Up()),
+		Vector3.Up()
 		// Vector3.Right().add(Vector3.Up()).add(DIRECTION.AWAY_FROM_SCREEN()),
 		// Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
 		// DIRECTION.AWAY_FROM_SCREEN()

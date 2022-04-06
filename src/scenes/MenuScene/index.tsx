@@ -2,7 +2,7 @@ import styles from "./index.module.css"
 import React from "react";
 import { SceneProps } from "react-app-env";
 import Hand from "services/Hand"
-import {Gesture, ONE, TWO, NONE} from "services/Gesture"
+import {Gesture, ONE, TWO, NONE, FIVE} from "services/Gesture"
 import StatusBar from "components/StatusBar";
 import one from "assets/img/one.png"
 import two from "assets/img/two.png"

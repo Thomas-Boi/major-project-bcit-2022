@@ -1,7 +1,7 @@
 import { LandmarkList, Landmark } from "@mediapipe/hands";
 import { LANDMARK_INDEX } from "./handsInfo";
 import { Gesture, InvalidDirections, ValidDirections } from "./Gesture";
-import { Finger, Thumb, FINGER_INDICES } from "./Finger";
+import { Finger, Thumb } from "./Finger";
 import { FingerState } from "./Gesture"
 
 
@@ -83,7 +83,7 @@ export default class Hand {
 	 * @returns whether the hand is making the gesture passed in. 
 	 */
 	matches(gesture: Gesture): boolean {
-		// let checkGestureName = "THUMBS UP"
+		// let checkGestureName = "FIVE"
 		// if (gesture.name == checkGestureName) {
 		// 	console.log("Checking gesture:", gesture.name)
 		// }
@@ -110,8 +110,8 @@ export default class Hand {
 				// if (gesture.name == checkGestureName) console.log("Finger direction wasn't in ValidDirections: ", {
 				// 	fingerName,
 				// 	direction: finger.direction,
-				// 	tip: finger.joints[FINGER_INDICES.PIP],
-				// 	mcp: finger.joints[FINGER_INDICES.MCP],
+					// tip: finger.joints[FINGER_INDICES.PIP],
+					// mcp: finger.joints[FINGER_INDICES.MCP],
 				// })
 				return false // doesn't match any => finger failed => whole gesture fails
 			}
