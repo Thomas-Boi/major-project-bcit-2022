@@ -1,5 +1,4 @@
 import { Vector3 } from "babylonjs"
-// import { DIRECTION } from "./handsInfo"
 
 /**
  * NOTE: All gestures are created from the POV of the viewer.
@@ -103,8 +102,7 @@ const GENERAL_CLOSED_FINGER: FingerState = {
 const GRAB_CLOSED_FINGER: FingerState = {
 	isStraight: false,
 	direction: new ValidDirections(
-		Vector3.Down(),
-		// Vector3.Down().add(DIRECTION.AWAY_FROM_SCREEN())
+		Vector3.Down()
 	)
 }
 
@@ -116,10 +114,7 @@ const THUMBS_UP_CLOSED_FINGER: FingerState = {
 	direction: new ValidDirections(
 		Vector3.Right(),
 		Vector3.Right().add(Vector3.Down()),
-		// Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
-		Vector3.Down(),
-		// Vector3.Down().add(DIRECTION.AWAY_FROM_SCREEN()),
-		// Vector3.Right().add(Vector3.Down()).add(DIRECTION.AWAY_FROM_SCREEN())
+		Vector3.Down()
 	)
 }
 
@@ -136,21 +131,19 @@ const UP_FINGER: FingerState = {
 }
 
 /**
- * The shape of the finger to rotate an object around the x axis globally.
- * This means the right hand's index finger is 
+ * The shape of the index finger for the ONE_HORIZONTAL shape.
  */
-const ROTATE_X_INDEX_FINGER: FingerState = {
+const ONE_HORIZONTAL_INDEX_FINGER: FingerState = {
 	isStraight: true,
 	direction: new ValidDirections(
-		Vector3.Right(),
-		// Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
+		Vector3.Right()
 	)
 }
 
 /**
- * The state of a closed non-thumb finger for the rotate x gesture.
+ * The state of a closed non-thumb finger for the ONE_HORIZONTAL gesture.
  */
-const ROTATE_X_CLOSED_FINGER: FingerState = {
+const ONE_HORIZONTAL_CLOSED_FINGER: FingerState = {
 	isStraight: false,
 	direction: new ValidDirections(
 		Vector3.Down(),
@@ -170,9 +163,6 @@ const OUTWARD_THUMB: FingerState = {
 		Vector3.Right(),
 		Vector3.Right().add(Vector3.Up()),
 		Vector3.Up()
-		// Vector3.Right().add(Vector3.Up()).add(DIRECTION.AWAY_FROM_SCREEN()),
-		// Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
-		// DIRECTION.AWAY_FROM_SCREEN()
 	)
 }
 
@@ -183,18 +173,14 @@ const CLOSED_THUMB: FingerState = {
 	isStraight: null,
 	direction: new InvalidDirections(
 		Vector3.Right(),
-		Vector3.Right().add(Vector3.Up()),
-		// Vector3.Right().add(Vector3.Up()).add(DIRECTION.AWAY_FROM_SCREEN()),
-		// Vector3.Right().add(DIRECTION.AWAY_FROM_SCREEN()),
-		// Vector3.Up().add(DIRECTION.AWAY_FROM_SCREEN()),
-		// Vector3.Up().add(DIRECTION.TOWARD_SCREEN())
+		Vector3.Right().add(Vector3.Up())
 	)
 }
 
 /**
- * The thumb shape for rotate x.
+ * The thumb shape for the ONE_HORIZONTAL shape.
  */
-const ROTATE_X_THUMB: FingerState = {
+const ONE_HORIZONTAL_THUMB: FingerState = {
 	isStraight: null,
 	direction: new ValidDirections(
 		Vector3.Right(),
@@ -210,8 +196,7 @@ const ROTATE_X_THUMB: FingerState = {
 const THUMBS_UP_THUMB: FingerState = {
 	isStraight: true,
 	direction: new ValidDirections(
-		Vector3.Up(),
-		// Vector3.Up().add(DIRECTION.TOWARD_SCREEN()),
+		Vector3.Up()
 	)
 }
 
@@ -239,13 +224,12 @@ export const NONE = new Gesture("NONE")
  * Empty gesture that signify an out of bound hand. Shouldn't use 
  * this to check as an gesture.
  */
-export const NOT_SEEN = new Gesture("NOT SEEN")
+export const NOT_SEEN = new Gesture("NOT_SEEN")
 
 /**
  * Gestures specific to 3D viewer
  */
-
-export const ROTATE_X = new Gesture("ROTATE X", ROTATE_X_THUMB, ROTATE_X_INDEX_FINGER, ROTATE_X_CLOSED_FINGER, ROTATE_X_CLOSED_FINGER, ROTATE_X_CLOSED_FINGER)
-export const THUMBS_UP = new Gesture("THUMBS UP", THUMBS_UP_THUMB, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER)
-export const L_SHAPE = new Gesture("L SHAPE", OUTWARD_THUMB, UP_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER)
-export const GRAB_FIST = new Gesture("GRAB FIST", CLOSED_THUMB, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER)
+export const ONE_HORIZONTAL = new Gesture("ONE_HORIZONTAL", ONE_HORIZONTAL_THUMB, ONE_HORIZONTAL_INDEX_FINGER, ONE_HORIZONTAL_CLOSED_FINGER, ONE_HORIZONTAL_CLOSED_FINGER, ONE_HORIZONTAL_CLOSED_FINGER)
+export const THUMBS_UP = new Gesture("THUMBS_UP", THUMBS_UP_THUMB, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER)
+export const L_SHAPE = new Gesture("L_SHAPE", OUTWARD_THUMB, UP_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER)
+export const GRAB_FIST = new Gesture("GRAB_FIST", CLOSED_THUMB, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER)

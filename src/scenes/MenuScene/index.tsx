@@ -2,7 +2,7 @@ import styles from "./index.module.css"
 import React from "react";
 import { SceneProps } from "react-app-env";
 import Hand from "services/Hand"
-import {Gesture, ONE, TWO, NONE, ROTATE_X} from "services/Gesture"
+import {Gesture, ONE, TWO, NONE } from "services/Gesture"
 import StatusBar from "components/StatusBar";
 import one from "assets/img/one.png"
 import two from "assets/img/two.png"
@@ -15,6 +15,14 @@ interface IState {
 	 * The name of the gesture to display on the screen.
 	 */
 	gesture: Gesture
+}
+
+/**
+ * Convert the valid gesture name to a command name.
+ */
+const gestureCommandObj = {
+	[ONE.name]: "3D VIEWER",
+	[TWO.name]: "TBD",
 }
 
 export default class MenuScene extends React.Component<SceneProps, IState> {
@@ -33,14 +41,14 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 		// set up the control to move to the other scenes
 		this.props.gestureDetector.addObserver(this.update, updateKeyName)
 		this.props.gestureDetector.removeAllGesturesToDetect()
-		this.props.gestureDetector.addGesturesToDetect([ONE, TWO, ROTATE_X])
+		this.props.gestureDetector.addGesturesToDetect([ONE, TWO])
 		this.isUnmounted = false
 	}
 
 	render() {
 		return (
 			<div className={styles.scene}>
-				<StatusBar gesture={this.state.gesture}/>
+				<StatusBar gesture={this.state.gesture} name={gestureCommandObj[this.state.gesture.name]}/>
 				<img className={styles.img} src={one} alt='One: select 3D Viewer'/>
 				<img className={styles.img} src={two} alt='Two: eather app'/>
 				<div className={styles.text}>3D Viewer</div>

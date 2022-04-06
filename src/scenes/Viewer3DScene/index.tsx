@@ -30,8 +30,21 @@ const SCALE_MULTIPLIER = 4
 const RESET_COUNTER_THRESHOLD_MILISEC = 1000
 const START_THRESHOLD_MILISEC = 600
 
+// for registering the callbacks to the GestureDetector
 const removeKeyName = "3Dremove"
 const updateKeyName = "3Dupdate"
+
+/**
+ * Convert the valid gesture name to a command name.
+ */
+const gestureCommandObj = {
+	[Gesture.GRAB_FIST.name]: "TRANSLATE",
+	[Gesture.ONE.name]: "ROTATE Y",
+	[Gesture.ONE_HORIZONTAL.name]: "ROTATE X",
+	[Gesture.THUMBS_UP.name]: "SCALE",
+	[Gesture.L_SHAPE.name]: "RESET",
+	[Gesture.FIVE.name]: "NEUTRAL"
+}
 
 export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	/**
@@ -54,8 +67,8 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		/**
 		 * First step: add a check for removing the instruction.
 		 */
-		this.props.gestureDetector.addObserver(this.removeInstruction, removeKeyName)
 		this.props.gestureDetector.removeAllGesturesToDetect()
+		this.props.gestureDetector.addObserver(this.removeInstruction, removeKeyName)
 		this.props.gestureDetector.addGesturesToDetect([Gesture.FIVE])
 	}
 
@@ -66,7 +79,8 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 					this.state.showsInstruction && 
 						<Viewer3DInstruction />
 				}
-				<StatusBar gesture={this.state.gesture}/>
+
+				<StatusBar gesture={this.state.gesture} name={gestureCommandObj[this.state.gesture.name]}/>
 				<canvas id='canvas'></canvas>
 			</div>
 		)
@@ -129,7 +143,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 					Gesture.FIVE,
 					Gesture.GRAB_FIST,
 					Gesture.ONE,
-					Gesture.ROTATE_X,
+					Gesture.ONE_HORIZONTAL,
 					Gesture.THUMBS_UP,
 					Gesture.L_SHAPE
 				])
@@ -158,7 +172,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		else if (curGesture === Gesture.ONE) {
 			this.rotateAroundY(hand, prevHand)
 		}
-		else if (curGesture === Gesture.ROTATE_X) {
+		else if (curGesture === Gesture.ONE_HORIZONTAL) {
 			this.rotateAroundX(hand, prevHand)
 		}
 		else if (curGesture === Gesture.THUMBS_UP) {

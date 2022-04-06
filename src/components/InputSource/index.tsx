@@ -10,7 +10,7 @@ import style from "./index.module.css"
  * user's hand hasn't move => also improve performance so we don't
  * update the app when we don't need to.
  */
-const STEPS_PER_SEC = 5
+const STEPS_PER_SEC = 25
 
 /**
  * Tracks how long in second each step should take.

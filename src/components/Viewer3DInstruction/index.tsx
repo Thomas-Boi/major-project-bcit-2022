@@ -10,11 +10,6 @@ import "./index.css"
 export default function Viewer3DInstruction() {
   return (
     <div className='instructionScreen'>
-			{/* <span id="loadingUI">
-				<div className='spinner'>
-				</div>
-				<div className="spinnerText">LOADING</div>
-			</span> */}
 			<span id="startMsg">
 				<img src={five} className="startGesture" alt='Start gesture'/>TO START
 			</span>
@@ -27,7 +22,7 @@ export default function Viewer3DInstruction() {
 				<div className="instructionText">TRANSLATE</div>
 				<div className="instructionText">ROTATE Y</div>
 				<div className="instructionText">ROTATE X</div>
-				<div className="instructionText">ZOOM</div>
+				<div className="instructionText">SCALE</div>
 				<div className="instructionText">RESET</div>
 			</div>
 		</div>
