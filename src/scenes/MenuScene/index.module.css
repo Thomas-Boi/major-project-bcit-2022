@@ -3,20 +3,27 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 3fr 1fr;
-  column-gap: 25%;
-  height: 100vh;
-  width: 120vh; 
+  top: 15vh;
+  height: 80vh; /* Don't want to block the top*/
+  width: 70vw; 
   text-align: center;
   align-items: center;
-  justify-content: center;
+  justify-items: center;
   margin: auto;
 }
 
 .img {
-  height: auto;
-  width: 100%;
+  height: 100%;
+  width: auto;
 }
 
 .text {
-  font-size: 3em;
+  font-size: 2.5em;
+}
+
+.rightHandTxt {
+  position: fixed;
+  top: 5vh;
+  right: 3vw;
+  font-size: 1.5em;
 }

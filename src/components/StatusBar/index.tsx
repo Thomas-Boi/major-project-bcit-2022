@@ -1,6 +1,6 @@
 import React from "react"
 import style from "./index.module.css"
-import {Gesture, NONE, NOT_SEEN} from "services/Gesture"
+import {Gesture, INVALID, NONE} from "services/Gesture"
 
 interface IProps {
 	/**
@@ -29,7 +29,7 @@ interface IProps {
 export default function StatusBar(props: IProps) {
 	// if out of bound or there's nothing, say it as not detected
 	let gesture = props.gesture
-	let detected = !(gesture === NONE || gesture === NOT_SEEN)
+	let detected = !(gesture === INVALID || gesture === NONE)
 
 	let colorStatusStyle = {
 		backgroundColor: detected ? "#02fd49" : "#ff0007",

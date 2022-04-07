@@ -113,8 +113,7 @@ const THUMBS_UP_CLOSED_FINGER: FingerState = {
 	isStraight: false,
 	direction: new ValidDirections(
 		Vector3.Right(),
-		Vector3.Right().add(Vector3.Down()),
-		Vector3.Down()
+		Vector3.Right().add(Vector3.Down())
 	)
 }
 
@@ -218,13 +217,13 @@ export const FIVE = new Gesture("FIVE", OUTWARD_THUMB, UP_FINGER, UP_FINGER, UP_
  * Empty gesture that's not supposed to match anything. Shouldn't use 
  * this to check as an gesture.
  */
-export const NONE = new Gesture("NONE")
+export const INVALID = new Gesture("INVALID")
 
 /**
  * Empty gesture that signify an out of bound hand. Shouldn't use 
  * this to check as an gesture.
  */
-export const NOT_SEEN = new Gesture("NOT SEEN")
+export const NONE = new Gesture("NONE")
 
 /**
  * Gestures specific to 3D viewer

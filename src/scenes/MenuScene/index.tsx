@@ -55,6 +55,7 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 		return (
 			<div className={styles.scene}>
 				<StatusBar gesture={this.state.gesture} name={gestureCommandObj[this.state.gesture.name]} progress={this.state.progress}/>
+				<span className={styles.rightHandTxt}>*RIGHT HAND ONLY</span>
 				<img className={styles.img} src={one} alt='One: select 3D Viewer'/>
 				<img className={styles.img} src={two} alt='Two: eather app'/>
 				<div className={styles.text}>3D Viewer</div>

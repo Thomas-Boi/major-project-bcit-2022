@@ -5,16 +5,3 @@ canvas {
   left: 0;
   margin: none;
 }
-
-.instructionScreen {
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-  text-align: center;
-  display: grid;
-  align-items: center;
-  justify-content: center;
-  grid-template-rows: 40% 60%;
-  row-gap: 5%;
-}
