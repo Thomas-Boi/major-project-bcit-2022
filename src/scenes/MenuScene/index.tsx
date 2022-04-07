@@ -72,7 +72,9 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 	}
 		
 	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture, gestureStartTime: number) => {
+		// has to set state before the callback are called
 		this.setState({gesture: curGesture})
+
 		if (!(hand && prevHand)) {
 			// do nothing, just end the if chain early
 			// for prevHand
@@ -82,17 +84,17 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 		}
 		else if (curGesture === ONE) {
 			let progress = (Date.now() - gestureStartTime) / GESTURE_TRIGGER_TIME_MILISEC
+			this.setState({progress})
 			if (Date.now() - gestureStartTime >= GESTURE_TRIGGER_TIME_MILISEC) {
 				this.props.loadSceneCallback("3D")
 			}
-			this.setState({progress})
 		}
 		else if (curGesture === TWO) {
 			let progress = (Date.now() - gestureStartTime) / GESTURE_TRIGGER_TIME_MILISEC
+			this.setState({progress})
 			if (Date.now() - gestureStartTime >= GESTURE_TRIGGER_TIME_MILISEC) {
 				this.props.loadSceneCallback("EATHER")
 			}
-			this.setState({progress})
 		}
 	}
 

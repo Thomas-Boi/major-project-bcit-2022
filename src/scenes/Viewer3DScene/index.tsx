@@ -7,6 +7,9 @@ import Viewer3DInstruction from "components/Viewer3DInstruction"
 import { getDelta } from "services/util"
 import "./index.css"
 import { SceneProps } from "react-app-env"
+import "babylonjs-loaders"
+// @ts-ignore
+import ufo from "assets/ufo.glb"
 
 interface IState {
 	/**
@@ -104,14 +107,23 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0), scene)
 		camera.attachControl(canvas, true)
 		
-		new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene)
-		this.mesh = BABYLON.MeshBuilder.CreateBox("box", {
-			faceColors: [
-				new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0),
-				new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0)
-			],
-			size: 0.5
-		}, scene)
+		var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+		light.diffuse = new BABYLON.Color3(1, 1, 1);
+		light.specular = new BABYLON.Color3(0, 0, 0);
+		light.intensity = 10
+
+
+		BABYLON.SceneLoader.ImportMeshAsync("", process.env.PUBLIC_URL + "/", "Lightsaber.glb", scene)
+			.then(result => {
+				this.mesh = result.meshes[0] as BABYLON.Mesh
+			})
+		// this.mesh = BABYLON.MeshBuilder.CreateBox("box", {
+		// 	faceColors: [
+		// 		new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0),
+		// 		new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0)
+		// 	],
+		// 	size: 0.5
+		// }, scene)
 
 		// attach the render callback
 		this.engine.runRenderLoop(() => scene.render())
