@@ -8,8 +8,6 @@ import { getDelta } from "services/util"
 import "./index.css"
 import { SceneProps } from "react-app-env"
 import "babylonjs-loaders"
-// @ts-ignore
-import ufo from "assets/ufo.glb"
 
 interface IState {
 	/**
@@ -36,7 +34,7 @@ const SCALE_MULTIPLIER = 4
 // tracks how long the user needs to hold their
 // hand to activate something
 const RESET_COUNTER_THRESHOLD_MILISEC = 1000
-const START_THRESHOLD_MILISEC = 600
+const START_THRESHOLD_MILISEC = 1000
 
 // for registering the callbacks to the GestureDetector
 const removeKeyName = "3Dremove"
@@ -117,6 +115,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 			.then(result => {
 				this.mesh = result.meshes[0] as BABYLON.Mesh
 			})
+		
 		// this.mesh = BABYLON.MeshBuilder.CreateBox("box", {
 		// 	faceColors: [
 		// 		new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0),
@@ -152,6 +151,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 
 	removeInstruction = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
 		if (curGesture === Gesture.FIVE) {
+			let progress = (Date.now() - gestureStartTime) / START_THRESHOLD_MILISEC
 			if (Date.now() - gestureStartTime >= START_THRESHOLD_MILISEC) {
 				this.props.gestureDetector.removeObserver(removeKeyName)
 				this.props.gestureDetector.addObserver(this.update, updateKeyName)
@@ -168,6 +168,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 
 				this.setState({showsInstruction: false})
 			}
+			this.setState({progress})
 		}
 		this.setState({gesture: curGesture})
 	}
@@ -248,7 +249,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		// has to fliip the vertical to get the right rotation
 		let verticalDelta = -getDelta(hand.index.joints[FINGER_INDICES.TIP].y, prevHand.index.joints[FINGER_INDICES.TIP].y)
 
-		this.mesh.rotate(BABYLON.Axis.X, ROTATE_MULTIPLIER * verticalDelta, BABYLON.Space.WORLD)
+		this.mesh.rotate(BABYLON.Axis.X, ROTATE_MULTIPLIER * verticalDelta)
 	}
 
 	/**
