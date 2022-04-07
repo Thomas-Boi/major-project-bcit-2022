@@ -111,18 +111,18 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		light.intensity = 10
 
 
-		BABYLON.SceneLoader.ImportMeshAsync("", process.env.PUBLIC_URL + "/", "Lightsaber.glb", scene)
-			.then(result => {
-				this.mesh = result.meshes[0] as BABYLON.Mesh
-			})
+		// BABYLON.SceneLoader.ImportMeshAsync("", process.env.PUBLIC_URL + "/", "Lightsaber.glb", scene)
+		// 	.then(result => {
+		// 		this.mesh = result.meshes[0] as BABYLON.Mesh
+		// 	})
 		
-		// this.mesh = BABYLON.MeshBuilder.CreateBox("box", {
-		// 	faceColors: [
-		// 		new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0),
-		// 		new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0)
-		// 	],
-		// 	size: 0.5
-		// }, scene)
+		this.mesh = BABYLON.MeshBuilder.CreateBox("box", {
+			faceColors: [
+				new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0),
+				new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0)
+			],
+			size: 0.5
+		}, scene)
 
 		// attach the render callback
 		this.engine.runRenderLoop(() => scene.render())
@@ -217,7 +217,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	translate(hand: Hand, prevHand: Hand) {
 		let horizontalDelta = getDelta(hand.middle.joints[FINGER_INDICES.PIP].x, prevHand.middle.joints[FINGER_INDICES.PIP].x)
 		// has to flip horizontal footage since camera flips the view
-		if (this.props.isScreenFacingUser) horizontalDelta *= -1
+		// if (this.props.isScreenFacingUser) horizontalDelta *= -1
 
 		// has to flip vertical footage since image y-axis run top to bottom (increase downward like js)
 		let verticalDelta = -getDelta(hand.wrist.y, prevHand.wrist.y)
@@ -240,7 +240,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		// don't need to flip the horizontal for this. The rotation matches
 		// with the flipped image
 		let horizontalDelta = getDelta(hand.index.joints[FINGER_INDICES.TIP].x, prevHand.index.joints[FINGER_INDICES.TIP].x)
-		if (!this.props.isScreenFacingUser) horizontalDelta *= -1
+		// if (!this.props.isScreenFacingUser) horizontalDelta *= -1
 
 		this.mesh.rotate(BABYLON.Axis.Y, ROTATE_MULTIPLIER * horizontalDelta, BABYLON.Space.WORLD)
 	}

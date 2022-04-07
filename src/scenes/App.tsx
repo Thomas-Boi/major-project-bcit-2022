@@ -6,6 +6,7 @@ import LoadingScene from './LoadingScene'
 import MenuScene from './MenuScene'
 import Viewer3DScene from './Viewer3DScene'
 import EatherScene from './EatherScene'
+import "./App.css"
 
 const SCENES =  {
   "LOADING": 0,
@@ -53,7 +54,11 @@ class App extends React.Component<any, IState> {
     this.gestureDetector = new GestureDetector()
     this.handTracker.addObserver(this.gestureDetector.onResultsCallback)
 
-    this.isScreenFacingUser = true
+    // detect whether we should go into flip mode or not based
+    // on the URL passed.
+    // to go into flip mode, add a `?flip` to the end of the URL
+    // if screen is facing user => no flip
+		this.isScreenFacingUser = window.location.href.match(/\?flip/) ? false : true
   }
 
   render() {
@@ -71,8 +76,8 @@ class App extends React.Component<any, IState> {
 
     // after the input source is mounted, it will start the pipeline process
     return (
-      <div className="App">
-        <InputSource tracker={this.handTracker}/>
+      <div className={this.isScreenFacingUser ? "App" : "flippedApp"}>
+        <InputSource tracker={this.handTracker} isScreenFacingUser={this.isScreenFacingUser}/>
         {scene}
       </div>
     );

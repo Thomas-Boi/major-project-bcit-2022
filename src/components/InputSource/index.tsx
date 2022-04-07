@@ -19,7 +19,16 @@ const UPDATE_STEP_IN_A_SEC = 1000 / STEPS_PER_SEC
 
 
 interface IProps {
+	/**
+	 * The tracker we are passing the camera data to.
+	 */
 	tracker: HandTracker
+
+	/**
+	 * Whether the screen is facing the user or we are using
+	 * the environment source.
+	 */
+	isScreenFacingUser: boolean
 }
 
 /**
@@ -50,10 +59,7 @@ export default class InputSource extends React.Component<IProps> {
 		this.videoRef = React.createRef<HTMLVideoElement>()
 		this.processedFrame = false
 		
-		// detect whether we are on a mobile phone
-		// if we are on a phone, switch to env facing mode
-		// if we are on a desktop => front facing 
-		this.facingMode = /Mobi/.test(navigator.userAgent) ? "environment" : "user"
+		this.facingMode = props.isScreenFacingUser ? "user" : "environment"
 	}
 
 	render() {
