@@ -7,7 +7,7 @@ import { Observable, GestureDetectorObserver } from "react-app-env"
 // when the track counter pass this threshold,
 // we are confident that the user is intentionally making a shape 
 // with their hand and not due to noises.
-const SHAPE_COUNTER_THRESHOLD = 7
+const SHAPE_COUNTER_THRESHOLD = 8
 
 /**
  * Detect the gesture based on the raw hand data from the HandTracker.

@@ -1,7 +1,7 @@
 /** This is for when the phone is used in hologram mode*/
 /** Basically flip the app upside down and the screen left to right*/
 .flippedApp {
-  transform: rotateX(180deg) rotateY(180deg);
+  transform: rotateY(180deg); /*  rotateX(180deg) */
   height: 100vh;
   width: 100vw;
 }
