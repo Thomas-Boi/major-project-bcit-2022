@@ -121,8 +121,13 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 			newGesture = Gesture.NONE
 		}
 		else {
+			// flip if needed
 			// valid data => start analyzing the shape
 			this.hand = new Hand(results.multiHandLandmarks[0])
+			// this.hand = new Hand( results.multiHandLandmarks[0].map(val => {
+			// 	val.y *= -1
+			// 	return val
+			// }))
 			for (let gesture of this.gesturesToDetect) {
 				if (this.hand.matches(gesture)) {
 					newGesture = gesture

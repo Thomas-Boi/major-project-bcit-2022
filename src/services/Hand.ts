@@ -83,19 +83,19 @@ export default class Hand {
 	 * @returns whether the hand is making the gesture passed in. 
 	 */
 	matches(gesture: Gesture): boolean {
-		let checkGestureName = "ONE HORIZONTAL"
-		if (gesture.name == checkGestureName) {
-			console.log("Checking gesture:", gesture.name)
-		}
+		// let checkGestureName = "ONE"
+		// if (gesture.name == checkGestureName) {
+		// 	console.log("Checking gesture:", gesture.name)
+		// }
 		for (let fingerName of this.fingerNames) {
 			let finger = this[fingerName] as Finger
 			let fingerState = gesture[fingerName] as FingerState 
 
 			if (fingerState.isStraight !== null) {
 				if (fingerState.isStraight !== finger.isStraight) {
-					if (gesture.name == checkGestureName) {
-						console.log("Failed at finger straightness: ", fingerName, finger.isStraight)
-					}
+					// if (gesture.name == checkGestureName) {
+					// 	console.log("Failed at finger straightness: ", fingerName, finger.isStraight)
+					// }
 					return false
 				}
 			}
@@ -107,12 +107,12 @@ export default class Hand {
 					direction => finger.direction.equals(direction)) 
 
 			if (fingerState.direction instanceof ValidDirections && searchResult === undefined) {
-				if (gesture.name == checkGestureName) console.log("Finger direction wasn't in ValidDirections: ", {
-					fingerName,
-					direction: finger.direction,
+				// if (gesture.name == checkGestureName) console.log("Finger direction wasn't in ValidDirections: ", {
+				// 	fingerName,
+				// 	direction: finger.direction,
 					// tip: finger.joints[FINGER_INDICES.PIP],
 					// mcp: finger.joints[FINGER_INDICES.MCP],
-				})
+				// })
 				return false // doesn't match any => finger failed => whole gesture fails
 			}
 			else if (fingerState.direction instanceof InvalidDirections && searchResult !== undefined) {
