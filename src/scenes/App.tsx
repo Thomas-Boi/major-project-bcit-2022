@@ -6,20 +6,15 @@ import LoadingScene from './LoadingScene'
 import MenuScene from './MenuScene'
 import Viewer3DScene from './Viewer3DScene'
 import EatherScene from './EatherScene'
+import HolographicScene from './HolographicScene'
+import {Scenes} from "services/util"
 import "./App.css"
-
-const SCENES =  {
-  "LOADING": 0,
-  "MENU": 1,
-  "3D": 2,
-  "EATHER": 3
-}
 
 interface IState {
   /**
    * The current scene index.
    */
-  curScene: number
+  curScene: Scenes
 }
 
 class App extends React.Component<any, IState> {
@@ -43,7 +38,7 @@ class App extends React.Component<any, IState> {
   constructor(props: any) {
     super(props)
     this.state = {
-      curScene: SCENES.LOADING      
+      curScene: Scenes.LOADING      
     }
 
     // connect the pipeline
@@ -64,13 +59,16 @@ class App extends React.Component<any, IState> {
   render() {
     // default scene is the loading scene 
     let scene = <LoadingScene isScreenFacingUser={this.isScreenFacingUser} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
-    if (this.state.curScene === SCENES['MENU']) {
+    if (this.state.curScene === Scenes.MENU) {
       scene = <MenuScene isScreenFacingUser={this.isScreenFacingUser} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
     }
-    else if (this.state.curScene === SCENES['3D']) {
+    else if (this.state.curScene === Scenes.VIEWER_3D) {
       scene = <Viewer3DScene isScreenFacingUser={this.isScreenFacingUser} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
     }
-    else if (this.state.curScene === SCENES['EATHER']) {
+    else if (this.state.curScene === Scenes.HOLOGRAPHIC) {
+      scene = <HolographicScene isScreenFacingUser={this.isScreenFacingUser} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
+    }
+    else if (this.state.curScene === Scenes.EATHER) {
       scene = <EatherScene isScreenFacingUser={this.isScreenFacingUser} gestureDetector={this.gestureDetector} loadSceneCallback={this.loadScene}/>
     }
 
@@ -83,8 +81,8 @@ class App extends React.Component<any, IState> {
     );
   }
 
-  loadScene = (sceneName: "MENU"|"3D"|"EATHER"|"LOADING") => {
-    this.setState({curScene: SCENES[sceneName]})
+  loadScene = (scene: Scenes) => {
+    this.setState({curScene: scene})
   }
 }
 

@@ -57,3 +57,17 @@ export function areRangesOverlap(start1: number, end1: number, start2: number, e
 	// solution taken from https://stackoverflow.com/a/3269471/11683637
 	return start1 <= end2 && start2 <= end1
 }
+
+
+/**
+ * All the scenes that's available in the app.
+ * NOTE: even though I want to, this can't be stored in the 
+ * react-app-env.d.ts file. It's probably because that's a declaration file.
+ */
+export enum Scenes {
+  LOADING,
+  MENU,
+  VIEWER_3D,
+  HOLOGRAPHIC,
+  EATHER
+}

@@ -1,6 +1,7 @@
 import "./index.css"
 import React from "react"
 import { SceneProps } from "react-app-env"
+import {Scenes} from "services/util"
 
 const removeKeyName = "loadRemove"
 
@@ -29,6 +30,6 @@ export default class LoadingScene extends React.Component<SceneProps> {
   }
 
   removeScene = () => {
-    this.props.loadSceneCallback("MENU")
+    this.props.loadSceneCallback(Scenes.MENU)
   }
 }

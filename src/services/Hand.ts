@@ -83,7 +83,7 @@ export default class Hand {
 	 * @returns whether the hand is making the gesture passed in. 
 	 */
 	matches(gesture: Gesture): boolean {
-		// let checkGestureName = "GRAB FIST"
+		// let checkGestureName = "THUMBS UP"
 		// if (gesture.name == checkGestureName) {
 		// 	console.log("Checking gesture:", gesture.name)
 		// }

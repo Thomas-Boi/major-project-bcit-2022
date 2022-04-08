@@ -4,6 +4,7 @@ import { Results } from "@mediapipe/hands"
 import Hand from "services/Hand"
 import { Gesture } from "services/Gesture"
 import GestureDetector from "services/GestureDetector"
+import {Scenes} from "services/util"
 
 declare module "*.mp4";
 declare module "*.png";
@@ -25,7 +26,7 @@ export interface SceneProps {
 	/**
 	 * A callback to load one of the other scenes
 	 */
-	loadSceneCallback: (sceneName: "MENU"|"3D"|"EATHER") => void
+	loadSceneCallback: (scene: Scenes) => void
 }
 
 /**
