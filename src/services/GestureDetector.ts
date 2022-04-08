@@ -7,7 +7,7 @@ import { Observable, GestureDetectorObserver } from "react-app-env"
 // when the track counter pass this threshold,
 // we are confident that the user is intentionally making a shape 
 // with their hand and not due to noises.
-const SHAPE_COUNTER_THRESHOLD = 8
+const SHAPE_COUNTER_THRESHOLD = 7
 
 /**
  * Detect the gesture based on the raw hand data from the HandTracker.
@@ -122,12 +122,12 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 		}
 		else {
 			// flip if needed
-			// valid data => start analyzing the shape
-			this.hand = new Hand(results.multiHandLandmarks[0])
 			// this.hand = new Hand( results.multiHandLandmarks[0].map(val => {
 			// 	val.y *= -1
 			// 	return val
 			// }))
+			// valid data => start analyzing the shape
+			this.hand = new Hand(results.multiHandLandmarks[0])
 			for (let gesture of this.gesturesToDetect) {
 				if (this.hand.matches(gesture)) {
 					newGesture = gesture

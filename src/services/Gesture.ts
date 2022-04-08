@@ -102,7 +102,18 @@ const GENERAL_CLOSED_FINGER: FingerState = {
 const GRAB_CLOSED_FINGER: FingerState = {
 	isStraight: false,
 	direction: new ValidDirections(
-		Vector3.Down()
+		Vector3.Down(),
+	)
+}
+
+/**
+ * The state of a closed non-thumb finger for a grabbing motion.
+ */
+const GRAB_CLOSED_PINKY: FingerState = {
+	isStraight: false,
+	direction: new ValidDirections(
+		Vector3.Down(),
+		Vector3.Down().add(Vector3.Right()),
 	)
 }
 
@@ -231,4 +242,4 @@ export const NONE = new Gesture("NONE")
 export const ONE_HORIZONTAL = new Gesture("ONE HORIZONTAL", ONE_HORIZONTAL_THUMB, ONE_HORIZONTAL_INDEX_FINGER, ONE_HORIZONTAL_CLOSED_FINGER, ONE_HORIZONTAL_CLOSED_FINGER, ONE_HORIZONTAL_CLOSED_FINGER)
 export const THUMBS_UP = new Gesture("THUMBS UP", THUMBS_UP_THUMB, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER, THUMBS_UP_CLOSED_FINGER)
 export const L_SHAPE = new Gesture("L SHAPE", OUTWARD_THUMB, UP_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER)
-export const GRAB_FIST = new Gesture("GRAB FIST", CLOSED_THUMB, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER)
+export const GRAB_FIST = new Gesture("GRAB FIST", CLOSED_THUMB, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_FINGER, GRAB_CLOSED_PINKY)

@@ -217,7 +217,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	translate(hand: Hand, prevHand: Hand) {
 		let horizontalDelta = getDelta(hand.middle.joints[FINGER_INDICES.PIP].x, prevHand.middle.joints[FINGER_INDICES.PIP].x)
 		// has to flip horizontal footage since camera flips the view
-		// if (this.props.isScreenFacingUser) horizontalDelta *= -1
+		horizontalDelta *= -1
 
 		// has to flip vertical footage since image y-axis run top to bottom (increase downward like js)
 		let verticalDelta = -getDelta(hand.wrist.y, prevHand.wrist.y)
@@ -254,7 +254,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		// has to fliip the vertical to get the right rotation
 		let verticalDelta = -getDelta(hand.index.joints[FINGER_INDICES.TIP].y, prevHand.index.joints[FINGER_INDICES.TIP].y)
 
-		this.mesh.rotate(BABYLON.Axis.X, ROTATE_MULTIPLIER * verticalDelta)
+		this.mesh.rotate(BABYLON.Axis.X, ROTATE_MULTIPLIER * verticalDelta, BABYLON.Space.WORLD)
 	}
 
 	/**
