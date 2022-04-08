@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/major-project-bcit-2022/static/css/main.62135964.css",
+    "main.js": "/major-project-bcit-2022/static/js/main.9e38f589.js",
+    "static/media/translate.png": "/major-project-bcit-2022/static/media/translate.dd4fdfc327ea09637e58.png",
+    "index.html": "/major-project-bcit-2022/index.html",
+    "main.62135964.css.map": "/major-project-bcit-2022/static/css/main.62135964.css.map",
+    "main.9e38f589.js.map": "/major-project-bcit-2022/static/js/main.9e38f589.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.62135964.css",
+    "static/js/main.9e38f589.js"
+  ]
+}
