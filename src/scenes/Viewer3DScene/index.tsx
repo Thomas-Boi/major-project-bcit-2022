@@ -105,30 +105,39 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0), scene)
 		camera.attachControl(canvas, true)
 		
-		var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+		let light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
 		light.diffuse = new BABYLON.Color3(1, 1, 1);
 		light.specular = new BABYLON.Color3(0, 0, 0);
-		light.intensity = 10
+		light.intensity = 3
 
 
-		// BABYLON.SceneLoader.ImportMeshAsync("", process.env.PUBLIC_URL + "/", "Lightsaber.glb", scene)
-		// 	.then(result => {
-		// 		this.mesh = result.meshes[0] as BABYLON.Mesh
-		// 	})
+		BABYLON.SceneLoader.ImportMeshAsync("", process.env.PUBLIC_URL + "/", "Earth.glb", scene)
+			.then(result => {
+				this.mesh = result.meshes[0] as BABYLON.Mesh
+			})
+			.then(() => {
+				  // only start rendering when the mesh is ready
+					// attach the render callback
+					this.engine.runRenderLoop(() => scene.render())
+
+					// handle resizing
+					window.addEventListener("resize", this.resize)
+
+			})
 		
-		this.mesh = BABYLON.MeshBuilder.CreateBox("box", {
-			faceColors: [
-				new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0),
-				new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0)
-			],
-			size: 0.5
-		}, scene)
+		// this.mesh = BABYLON.MeshBuilder.CreateBox("box", {
+		// 	faceColors: [
+		// 		new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0), new BABYLON.Color4(1, 0, 0, 0),
+		// 		new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0), new BABYLON.Color4(0, 1, 0, 0)
+		// 	],
+		// 	size: 0.5
+		// }, scene)
 
 		// attach the render callback
-		this.engine.runRenderLoop(() => scene.render())
+		// this.engine.runRenderLoop(() => scene.render())
 
 		// handle resizing
-		window.addEventListener("resize", this.resize)
+		// window.addEventListener("resize", this.resize)
 	}
 
 	/**
@@ -268,7 +277,8 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		let horizontalDelta = -getDelta(hand.middle.joints[FINGER_INDICES.PIP].x, prevHand.middle.joints[FINGER_INDICES.PIP].x)
 
 		let scale = horizontalDelta * SCALE_MULTIPLIER
-		this.mesh.scaling.addInPlaceFromFloats(scale, scale, scale)
+		// for some reason, z-axis scaling starts at -1 => to increase it, we subtract
+		this.mesh.scaling.addInPlaceFromFloats(scale, scale, -scale)
 	}
 
 	/**
