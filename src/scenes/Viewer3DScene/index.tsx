@@ -76,7 +76,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		 */
 		this.props.gestureDetector.removeAllGesturesToDetect()
 		this.props.gestureDetector.addObserver(this.removeInstruction, removeKeyName)
-		this.props.gestureDetector.addGesturesToDetect([Gesture.FIVE])
+		this.props.gestureDetector.addGesturesToDetect([Gesture.ONE, Gesture.FIVE])
 	}
 
 	render() {
@@ -273,7 +273,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	 */
 	scale(hand: Hand, prevHand: Hand) {
 		// has to flip the scale because our movement is opposite of the camera
-		// don't need to check for isSelfieThough since we aren't moving on the canvas, just scaling
+		// don't need to check for isScreenFacingUser since we aren't moving on the canvas, just scaling
 		let horizontalDelta = -getDelta(hand.middle.joints[FINGER_INDICES.PIP].x, prevHand.middle.joints[FINGER_INDICES.PIP].x)
 
 		let scale = horizontalDelta * SCALE_MULTIPLIER

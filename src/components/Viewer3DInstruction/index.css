@@ -7,6 +7,13 @@
   height: 100vh;
   position: fixed;
   z-index: 1;
+  row-gap: 15%;
+}
+
+@media screen and (max-width: 900px) {
+  .instructionScreen {
+    row-gap: 0;
+  } 
 }
 
 #startMsg {
@@ -45,6 +52,7 @@
   height: 100%;
   width: 100%;
   border-right: 3px solid white;
+  text-align: center;
 }
 
 .instructionText:last-of-type {

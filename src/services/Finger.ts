@@ -19,7 +19,7 @@ const NEAR_UP_LEFT_AXIS_BOUND = Math.PI * 5 / 6
 	* it to be on the line (like a margin of error).
 	* Smaller => more accurate.
 	**/
-const STRAIGHTNESS_VARIATION = 0.011
+const STRAIGHTNESS_VARIATION = 0.01
 
 /*
 	* The straightness variation but for thumb specifically.

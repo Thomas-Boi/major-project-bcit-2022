@@ -78,7 +78,10 @@ export default class GestureDetector implements Observable<GestureDetectorObserv
 	 * for.
 	 */
 	addGesturesToDetect(gestures: Array<Gesture.Gesture>) {
-		this.gesturesToDetect.push(...gestures)
+		for (let gesture of gestures) {
+			if (this.gesturesToDetect.includes(gesture)) continue
+			this.gesturesToDetect.push(gesture)
+		}
 	}
 
 	/**
