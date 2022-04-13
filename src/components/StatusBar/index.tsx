@@ -43,6 +43,9 @@ export default function StatusBar(props: IProps) {
 		if (progress > 1) progress = 1
 		colorStatusStyle["transform"] = `scaleX(${progress})`
 	}
+	else {
+		colorStatusStyle["transform"] = `scaleX(1)` // reset 
+	}
 
 	// detected color == green, else red
 	return (

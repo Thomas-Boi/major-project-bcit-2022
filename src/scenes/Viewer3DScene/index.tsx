@@ -231,11 +231,11 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		// has to flip vertical footage since image y-axis run top to bottom (increase downward like js)
 		let verticalDelta = -getDelta(hand.wrist.y, prevHand.wrist.y)
 
-		if (Math.abs(horizontalDelta) > 0.004) {
+		if (Math.abs(horizontalDelta) > 0.005) {
 			this.mesh.translate(BABYLON.Axis.X, TRANSLATE_MULTIPLIER * horizontalDelta, BABYLON.Space.WORLD)
 		}
 
-		if (Math.abs(verticalDelta) > 0.004) {
+		if (Math.abs(verticalDelta) > 0.005) {
 			this.mesh.translate(BABYLON.Axis.Y, TRANSLATE_MULTIPLIER * verticalDelta, BABYLON.Space.WORLD)
 		}
 	}
@@ -276,16 +276,19 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		// don't need to check for isScreenFacingUser since we aren't moving on the canvas, just scaling
 		let horizontalDelta = -getDelta(hand.middle.joints[FINGER_INDICES.PIP].x, prevHand.middle.joints[FINGER_INDICES.PIP].x)
 
-		let scale = horizontalDelta * SCALE_MULTIPLIER
-		// for some reason, z-axis scaling starts at -1 => to increase it, we subtract
-		this.mesh.scaling.addInPlaceFromFloats(scale, scale, -scale)
+		// prevent jitters
+		if (Math.abs(horizontalDelta) > 0.004) {
+			let scale = horizontalDelta * SCALE_MULTIPLIER
+			// for some reason, z-axis scaling starts at -1 => to increase it, we subtract
+			this.mesh.scaling.addInPlaceFromFloats(scale, scale, -scale)
+		}
 	}
 
 	/**
 	 * Reset the cube's position, rotation, and scale to its original.
 	 */
 	reset() {
-		this.mesh.scaling = new BABYLON.Vector3(1, 1, 1)
+		this.mesh.scaling = new BABYLON.Vector3(1, 1, -1) // z axis has to be negative
 		this.mesh.position = new BABYLON.Vector3(0, 0, 0)
 		this.mesh.rotation = new BABYLON.Vector3(0, 0, 0)
 	}
