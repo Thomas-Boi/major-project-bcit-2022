@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.css": "/major-project-bcit-2022/static/css/main.e9215bb3.css",
-    "main.js": "/major-project-bcit-2022/static/js/main.8ae89bb5.js",
+    "main.css": "/major-project-bcit-2022/static/css/main.79e382ca.css",
+    "main.js": "/major-project-bcit-2022/static/js/main.401e63d9.js",
+    "static/media/lightning.mp4": "/major-project-bcit-2022/static/media/lightning.172f34c45430312f21c9.mp4",
     "static/media/HolographicShowMusic.mp4": "/major-project-bcit-2022/static/media/HolographicShowMusic.f6ec352847c891b91dd3.mp4",
     "static/media/translate.png": "/major-project-bcit-2022/static/media/translate.7a41c0fc163a71499ebe.png",
     "index.html": "/major-project-bcit-2022/index.html",
-    "main.e9215bb3.css.map": "/major-project-bcit-2022/static/css/main.e9215bb3.css.map",
-    "main.8ae89bb5.js.map": "/major-project-bcit-2022/static/js/main.8ae89bb5.js.map"
+    "main.79e382ca.css.map": "/major-project-bcit-2022/static/css/main.79e382ca.css.map",
+    "main.401e63d9.js.map": "/major-project-bcit-2022/static/js/main.401e63d9.js.map"
   },
   "entrypoints": [
-    "static/css/main.e9215bb3.css",
-    "static/js/main.8ae89bb5.js"
+    "static/css/main.79e382ca.css",
+    "static/js/main.401e63d9.js"
   ]
 }
