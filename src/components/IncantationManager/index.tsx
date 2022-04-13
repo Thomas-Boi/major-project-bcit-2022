@@ -26,6 +26,8 @@ interface IProps {
 	 * The time when the user started the gesture.
 	 */
 	gestureStartTime: number
+
+  videoPlaying: boolean
 }
 
 interface IState {
@@ -130,6 +132,7 @@ export const incantsConfig: {[key: string]: IncantationConfig} = {
   }
 }
 
+const PLAY_VID_THRESHOLD_TIME_MILI = 3000
 
 export default class IncantationManager extends React.Component<IProps, IState> {
   /**
@@ -137,14 +140,25 @@ export default class IncantationManager extends React.Component<IProps, IState> 
    */
   intervalObj: ReturnType<typeof setInterval>
 
+  /**
+   * The incantation name the user is selecting.
+   */
+  selectedIncantName: string
+
 	constructor(props: IProps) {
 		super(props)
 		this.state = {
 			activeIncants: []
     }
+
+    this.selectedIncantName = ""
   }
 
   render() {
+    if (!this.props.videoPlaying && this.intervalObj === null) {
+      this.intervalObj = setInterval(this.spawn, SPAWNER_TIMESTEP_MILISEC)
+    }
+
     // check gestures and see if it matches anything on screen
     // if it does, we set it as active
     let active = this.state.activeIncants.find(incant => {
@@ -162,6 +176,27 @@ export default class IncantationManager extends React.Component<IProps, IState> 
           {items}
       </div>
     )
+  }
+
+  componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any): void {
+    let active = this.state.activeIncants.find(incant => {
+      return incantsConfig[incant.name].gesture === this.props.curGesture
+    })
+
+    if (active?.name === this.selectedIncantName) {
+      // check time hold
+			if (Date.now() - this.props.gestureStartTime >= PLAY_VID_THRESHOLD_TIME_MILI) {
+        // stop spawning for now
+        clearInterval(this.intervalObj)
+        this.intervalObj = null
+
+        // remove all gestures
+        this.setState({activeIncants: []})
+        this.props.playVideoCallback(incantsConfig[active.name].vidUrl)
+			}
+    }
+    else this.selectedIncantName = active?.name ? active.name : ""
+    
   }
 
   /**

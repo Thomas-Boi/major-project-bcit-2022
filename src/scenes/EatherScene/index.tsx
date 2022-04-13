@@ -47,8 +47,9 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 				<IncantationManager 
 					playVideoCallback={this.playVideo} 
 					curGesture={this.state.curGesture} 
-					gestureStartTime={this.state.gestureStartTime} />
-        <video className={style.video} src={getVid(this.state.curVideoName)} onEnded={this.onVideoEnded}></video>
+					gestureStartTime={this.state.gestureStartTime} 
+					videoPlaying={this.videoPlaying}/>
+        <video className={style.video} src={this.state.curVideoName} autoPlay onEnded={this.onVideoEnded}></video>
       </div>
     )
   }
@@ -83,6 +84,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 	 * @param vidName the video name
 	 */
 	playVideo = (vidName: string) => {
+		if (this.videoPlaying) return
 		this.videoPlaying = true
 		this.setState({curVideoName: vidName})
 	}
