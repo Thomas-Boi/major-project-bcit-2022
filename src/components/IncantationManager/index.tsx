@@ -1,6 +1,6 @@
 import React from "react"
 import style from "./index.module.css"
-import {Incantation, IncantationProps, INCANTATION_SIZE} from "components/Incantation"
+import {Incantation, INCANTATION_SIZE} from "components/Incantation"
 import * as Gesture from "services/Gesture"
 import {getRandomInt, getRandomValue, areRangesOverlap} from "services/util"
 
@@ -10,7 +10,6 @@ import oneImg from "assets/img/one.png"
 import twoImg from "assets/img/two.png"
 // @ts-ignore
 import lightningVid from "assets/video/lightning.mp4"
-import { UnionType } from "typescript"
 
 interface IProps {
   /**
@@ -147,8 +146,15 @@ export default class IncantationManager extends React.Component<IProps, IState> 
 
   render() {
     // check gestures and see if it matches anything on screen
+    // if it does, we set it as active
+    let active = this.state.activeIncants.find(incant => {
+      return incantsConfig[incant.name].gesture === this.props.curGesture
+    })
+
+    // render the incantations
     let items = this.state.activeIncants.map((data, index) => {
-      return <Incantation key={index} x={data.x} y={data.y} imgUrl={incantsConfig[data.name].imgUrl} />
+      let selected = data.name === active?.name
+      return <Incantation key={index} x={data.x} y={data.y} imgUrl={incantsConfig[data.name].imgUrl} selected={selected} />
     })
 
     return (

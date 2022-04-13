@@ -1,6 +1,5 @@
 import React from "react"
 import cssFile from "./index.module.css"
-import {Gesture} from "services/Gesture"
 
 
 /**
@@ -23,7 +22,10 @@ export interface IncantationProps {
    */
   y: number;
 
-
+  /**
+   * Whether the incantation is selected by the user.
+   */
+  selected: boolean;
 }
 
 /**
@@ -37,9 +39,15 @@ export const INCANTATION_SIZE = document.body.clientWidth * 0.2
  * @returns 
  */
 export function Incantation(props: IncantationProps) {
-  let style = {
+  let style: {transform: string, opacity?: number} = {
     "transform": `translate(${props.x}px, ${props.y}px)`
   }
+
+  if (props.selected) {
+    style.transform += " scale(1.2)"
+    style.opacity = 1
+  }
+
   return (
     <img src={props.imgUrl} className={cssFile.img} style={style} alt='An Incantation'/>
   )
