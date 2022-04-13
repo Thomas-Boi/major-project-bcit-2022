@@ -49,7 +49,8 @@ const gestureCommandObj = {
 	[Gesture.ONE_HORIZONTAL.name]: "ROTATE X",
 	[Gesture.THUMBS_UP.name]: "SCALE",
 	[Gesture.L_SHAPE.name]: "RESET",
-	[Gesture.FIVE.name]: "NEUTRAL"
+	[Gesture.FIVE.name]: "NEUTRAL",
+	[Gesture.GRAB_THUMBS_OUT.name]: "BACK",
 }
 
 export default class Viewer3DScene extends React.Component<SceneProps, IState> {
@@ -172,7 +173,8 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 					Gesture.ONE,
 					Gesture.ONE_HORIZONTAL,
 					Gesture.THUMBS_UP,
-					Gesture.L_SHAPE
+					Gesture.L_SHAPE,
+					Gesture.GRAB_THUMBS_OUT
 				])
 
 				this.setState({showsInstruction: false})
@@ -187,6 +189,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 	 * @param results the result of the data parsing.
 	 */
 	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
+		let progress = 1
 		if (!(hand && prevHand)) {
 			// do nothing, just end the if checks early
 			// for prevHand
@@ -207,15 +210,13 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 			this.scale(hand, prevHand)
 		}
 		else if (curGesture === Gesture.L_SHAPE) {
-			let progress = (Date.now() - gestureStartTime) / RESET_COUNTER_THRESHOLD_MILISEC
+			progress = (Date.now() - gestureStartTime) / RESET_COUNTER_THRESHOLD_MILISEC
 			if (Date.now() - gestureStartTime >= RESET_COUNTER_THRESHOLD_MILISEC) {
 				this.reset()
 			}
-			this.setState({progress})
 		}
 
-		// this is for valid detections
-		this.setState({gesture: curGesture})
+		this.setState({gesture: curGesture, progress})
 	}
 
 	/**

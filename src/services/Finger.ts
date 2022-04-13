@@ -66,6 +66,7 @@ export function fitOnLine(point: Vector3, start: Vector3, vector: Vector3, varia
 
 	// find the magnitude/length of the perpendicular vector
 	// and check that it's within the variation
+	console.log(perpendicular.length())
 	return perpendicular.length() <= variation
 }
 

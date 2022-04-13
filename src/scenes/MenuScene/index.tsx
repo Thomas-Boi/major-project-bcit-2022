@@ -2,7 +2,7 @@ import styles from "./index.module.css"
 import React from "react";
 import { SceneProps } from "react-app-env";
 import Hand from "services/Hand"
-import {Gesture, ONE, TWO, THREE, NONE } from "services/Gesture"
+import * as Gesture from "services/Gesture"
 import StatusBar from "components/StatusBar";
 import one from "assets/img/one.png"
 import two from "assets/img/two.png"
@@ -16,7 +16,7 @@ interface IState {
 	/**
 	 * The name of the gesture to display on the screen.
 	 */
-	gesture: Gesture
+	gesture: Gesture.Gesture
 
 	/**
 	 * The progress for the progress bar in the StatusBar component.
@@ -28,8 +28,8 @@ interface IState {
  * Convert the valid gesture name to a command name.
  */
 const gestureCommandObj = {
-	[ONE.name]: "3D VIEWER",
-	[TWO.name]: "SLIDESHOW",
+	[Gesture.ONE.name]: "3D VIEWER",
+	[Gesture.TWO.name]: "SLIDESHOW",
 }
 
 export default class MenuScene extends React.Component<SceneProps, IState> {
@@ -42,14 +42,14 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 		super(props)
 
 		this.state = {
-			gesture: NONE,
+			gesture: Gesture.NONE,
 			progress: undefined
 		}
 
 		// set up the control to move to the other scenes
 		this.props.gestureDetector.addObserver(this.update, updateKeyName)
 		this.props.gestureDetector.removeAllGesturesToDetect()
-		this.props.gestureDetector.addGesturesToDetect([ONE, TWO])
+		this.props.gestureDetector.addGesturesToDetect([Gesture.ONE, Gesture.TWO, Gesture.GRAB_FIST])
 		this.isUnmounted = false
 	}
 
@@ -75,7 +75,7 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 		this.props.gestureDetector.removeObserver(updateKeyName)
 	}
 		
-	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture, gestureStartTime: number) => {
+	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
 		// has to set state before the callback are called
 		this.setState({gesture: curGesture})
 
@@ -88,14 +88,14 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 			return
 		}
 
-		if (curGesture === ONE) {
+		if (curGesture === Gesture.ONE) {
 			let progress = (Date.now() - gestureStartTime) / GESTURE_TRIGGER_TIME_MILISEC
 			this.setState({progress})
 			if (Date.now() - gestureStartTime >= GESTURE_TRIGGER_TIME_MILISEC) {
 				this.props.loadSceneCallback(Scenes.VIEWER_3D)
 			}
 		}
-		else if (curGesture === TWO) {
+		else if (curGesture === Gesture.TWO) {
 			let progress = (Date.now() - gestureStartTime) / GESTURE_TRIGGER_TIME_MILISEC
 			this.setState({progress})
 			if (Date.now() - gestureStartTime >= GESTURE_TRIGGER_TIME_MILISEC) {
