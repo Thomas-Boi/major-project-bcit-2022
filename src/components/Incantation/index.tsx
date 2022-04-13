@@ -2,17 +2,16 @@ import React from "react"
 import cssFile from "./index.module.css"
 import {Gesture} from "services/Gesture"
 
-export interface IncantationData {
-  imgUrl: string
-  // /**
-  //  * The weather effect associated with this Incantation.
-  //  */
-  // weatherName: string
 
-  // /**
-  //  * The gesture associated with this Incantation.
-  //  */
-  // gesture: Gesture
+/**
+ * The incantation props.
+ */
+export interface IncantationProps {
+	/**
+	 * The image associated with the incantation.
+	 * Include extension name (e.g "lightning.png").
+	 */
+  imgUrl: string
 
   /**
    * The x position as a pixel value.
@@ -37,7 +36,7 @@ export const INCANTATION_SIZE = document.body.clientWidth * 0.2
  * @param props 
  * @returns 
  */
-export function Incantation(props: IncantationData) {
+export function Incantation(props: IncantationProps) {
   let style = {
     "transform": `translate(${props.x}px, ${props.y}px)`
   }

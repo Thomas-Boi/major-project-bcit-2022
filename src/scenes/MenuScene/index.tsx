@@ -29,7 +29,7 @@ interface IState {
  */
 const gestureCommandObj = {
 	[Gesture.ONE.name]: "3D VIEWER",
-	[Gesture.TWO.name]: "SLIDESHOW",
+	[Gesture.TWO.name]: "SLIDESHOW"
 }
 
 export default class MenuScene extends React.Component<SceneProps, IState> {
@@ -49,7 +49,7 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 		// set up the control to move to the other scenes
 		this.props.gestureDetector.addObserver(this.update, updateKeyName)
 		this.props.gestureDetector.removeAllGesturesToDetect()
-		this.props.gestureDetector.addGesturesToDetect([Gesture.ONE, Gesture.TWO, Gesture.GRAB_FIST])
+		this.props.gestureDetector.addGesturesToDetect([Gesture.ONE, Gesture.TWO])
 		this.isUnmounted = false
 	}
 

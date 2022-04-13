@@ -2,7 +2,7 @@ import style from "./index.module.css"
 import React from "react"
 import { SceneProps } from "react-app-env"
 import {getVid} from "services/util"
-import IncantationManager from "components/IncantationManager"
+import IncantationManager, {incantsConfig} from "components/IncantationManager"
 import Hand from "services/Hand"
 import * as Gesture from "services/Gesture"
 
@@ -12,21 +12,15 @@ interface IState {
 	 */
 	curVideoName: string
 
+	/**
+	 * The current gesture the user is making.
+	 */
 	curGesture: Gesture.Gesture | null
 
 	/**
 	 * The time when the user started the gesture.
 	 */
 	gestureStartTime: number
-}
-
-/**
- * An object mapping the gesture image to its name.
- */
-const vidIncantations = {
-  "lightning": Gesture.FIVE,
-  "snow": Gesture.ONE,
-  "rain": Gesture.TWO
 }
 
 export default class EatherScene extends React.Component<SceneProps, IState> {
@@ -53,8 +47,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 				<IncantationManager 
 					playVideoCallback={this.playVideo} 
 					curGesture={this.state.curGesture} 
-					gestureStartTime={this.state.gestureStartTime}
-					vidIncantations={vidIncantations}/>
+					gestureStartTime={this.state.gestureStartTime} />
         <video className={style.video} src={getVid(this.state.curVideoName)} onEnded={this.onVideoEnded}></video>
       </div>
     )
@@ -68,7 +61,9 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 		// this.props.gestureDetector.addGesturesToDetect([Gesture.FIVE])
 
 		this.props.gestureDetector.addObserver(this.update, this.update.name)
-		this.props.gestureDetector.addGesturesToDetect(Object.values(vidIncantations))
+		this.props.gestureDetector.addGesturesToDetect(
+			Object.values(incantsConfig)
+				.map(config => config.gesture))
 		
 	}
 

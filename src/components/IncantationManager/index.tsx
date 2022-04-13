@@ -1,11 +1,16 @@
 import React from "react"
 import style from "./index.module.css"
-import {Incantation, IncantationData, INCANTATION_SIZE} from "components/Incantation"
-import five from "assets/img/five.png"
-import one from "assets/img/one.png"
-import two from "assets/img/two.png"
+import {Incantation, IncantationProps, INCANTATION_SIZE} from "components/Incantation"
 import * as Gesture from "services/Gesture"
 import {getRandomInt, getRandomValue, areRangesOverlap} from "services/util"
+
+// assets
+import fiveImg from "assets/img/five.png"
+import oneImg from "assets/img/one.png"
+import twoImg from "assets/img/two.png"
+// @ts-ignore
+import lightningVid from "assets/video/lightning.mp4"
+import { UnionType } from "typescript"
 
 interface IProps {
   /**
@@ -22,11 +27,6 @@ interface IProps {
 	 * The time when the user started the gesture.
 	 */
 	gestureStartTime: number
-
-  /**
-   * An object mapping the gesture image to its name.
-   */
-  vidIncantations: Object
 }
 
 interface IState {
@@ -65,10 +65,72 @@ const SPAWN_Y_UPPER_BOUND = window.innerHeight - INCANTATION_SIZE
  * An object mapping the gesture image to its name.
  */
 export const gestures = {
-  [Gesture.FIVE.name]: five,
-  [Gesture.ONE.name]: one,
-  [Gesture.TWO.name]: two
+  [Gesture.FIVE.name]: fiveImg,
+  [Gesture.ONE.name]: oneImg,
+  [Gesture.TWO.name]: twoImg
 }
+
+/**
+ * The configuration detail of an incantation.
+ * This means the static aspects.
+ */
+interface IncantationConfig {
+	/**
+	 * The image associated with the incantation.
+	 * Include extension name (e.g "lightning.png").
+	 */
+  imgUrl: string
+
+	/**
+	 * The image associated with the incantation.
+	 * Include extension name (e.g "lightning.mp4").
+	 */
+  vidUrl: string
+
+  /**
+   * The gesture associated with this Incantation.
+   */
+  gesture: Gesture.Gesture
+}
+
+interface IncantationData {
+  /**
+   * Name of the incantation.
+   */
+  name: string
+
+  /**
+   * The x position as a pixel value.
+   */
+  x: number;
+
+  /**
+   * The y position as a pixel value.
+   */
+  y: number;
+}
+
+/**
+ * An object mapping an incantation to its properties: image, video, and gestures.
+ */
+export const incantsConfig: {[key: string]: IncantationConfig} = {
+  "lightning": {
+    "gesture": Gesture.FIVE,
+    "vidUrl": lightningVid,
+    "imgUrl": fiveImg
+  },
+  "snow": {
+    "gesture": Gesture.ONE,
+    "vidUrl": lightningVid,
+    "imgUrl": oneImg
+  },
+  "rain": {
+    "gesture": Gesture.TWO,
+    "vidUrl": lightningVid,
+    "imgUrl": twoImg
+  }
+}
+
 
 export default class IncantationManager extends React.Component<IProps, IState> {
   /**
@@ -78,19 +140,15 @@ export default class IncantationManager extends React.Component<IProps, IState> 
 
 	constructor(props: IProps) {
 		super(props)
-    // init all the incantations we will have and set them to not appear
 		this.state = {
 			activeIncants: []
     }
-
-    // let possibleIncants = Object.keys(this.props.vidIncantations).map(weatherName => {
-      
-    // })
   }
 
   render() {
+    // check gestures and see if it matches anything on screen
     let items = this.state.activeIncants.map((data, index) => {
-      return <Incantation key={index} {...data} />
+      return <Incantation key={index} x={data.x} y={data.y} imgUrl={incantsConfig[data.name].imgUrl} />
     })
 
     return (
@@ -122,16 +180,14 @@ export default class IncantationManager extends React.Component<IProps, IState> 
   }
 
   /**
-   * Create a new incantation
+   * Create a new incantation, This must not 
+   * be an incantation already on the screen.
    * @returns 
    */
   createNewIncantation(): IncantationData {
-    let activeImgUrl: Array<string> = []
-    for (let data of this.state.activeIncants) {
-      activeImgUrl.push(data.imgUrl)
-    }
-
-    let imgUrl = getRandomValue(Object.values(gestures).filter(value => !activeImgUrl.includes(value)))
+    // get an inactive incants
+    let inactiveIncants = this.getInactiveIncantNames()
+    let incant = getRandomValue(inactiveIncants)
 
     // calculate the x and y values so that our new gesture won't overlap with them
     // first, just pick a random coord
@@ -150,33 +206,37 @@ export default class IncantationManager extends React.Component<IProps, IState> 
     }
 
     return {
-      imgUrl,
+      name: incant,
       x: possibleX,
       y: possibleY
     }
   }
 
   /**
-   * Check whether an incantation is active (being shown on screen)
-   * by checking whether its gestureUrl is being used.
-   * @param gestureUrl the url of the gesture image.
-   * @return true if the incantation is on the screen, else false.
+   * Get all the unused incantations.
    */
-  isIncantationActive(gestureUrl: string): boolean {
-    for (let data of this.state.activeIncants) {
-      if (data.imgUrl === gestureUrl) return true
+  getInactiveIncantNames(): Array<string> {
+    let inactive = []
+    let activeNames = Object.values(this.state.activeIncants)
+      .map(active => active.name)
+
+    for (let name of Object.keys(incantsConfig)) {
+      // check if they are in the activeIncants
+      if (!activeNames.includes(name)) {
+        inactive.push(name)
+      }
     }
-    return false
+    return inactive
   }
 
   /**
-   * 
-   * @param key the key 
+   * Remove the incantation at this index.
+   * @param index the key 
    */
-  removeIncantation(key: number) {
+  removeIncantation(index: number) {
     // make a copy then modify it
     let copy = this.state.activeIncants.slice()
-    copy.splice(key, 1) // remove one item at this space
+    copy.splice(index, 1) // remove one item at this space
     this.setState({activeIncants: copy})
   }
 
