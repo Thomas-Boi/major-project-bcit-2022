@@ -99,8 +99,8 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 			let progress = (Date.now() - gestureStartTime) / GESTURE_TRIGGER_TIME_MILISEC
 			this.setState({progress})
 			if (Date.now() - gestureStartTime >= GESTURE_TRIGGER_TIME_MILISEC) {
-				this.props.loadSceneCallback(Scenes.HOLOGRAPHIC)
-				// this.props.loadSceneCallback(Scenes.EATHER)
+				// this.props.loadSceneCallback(Scenes.HOLOGRAPHIC)
+				this.props.loadSceneCallback(Scenes.EATHER)
 			}
 		}
 		// else if (curGesture === THREE) {
