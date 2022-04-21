@@ -228,7 +228,7 @@ export const FIVE = new Gesture("FIVE", OUTWARD_THUMB, UP_FINGER, UP_FINGER, UP_
  * Empty gesture that's not supposed to match anything. Shouldn't use 
  * this to check as an gesture.
  */
-export const INVALID = new Gesture("INVALID")
+export const UNKNOWN = new Gesture("UNKNOWN")
 
 /**
  * Empty gesture that signify an out of bound hand. Shouldn't use 

@@ -5,12 +5,10 @@ import style from "./index.module.css"
 
 /**
  * Tracks how many steps/update we can do per second.
- * This frame cap improve performance (doesn't update unless needed).
- * Also prevent the camera from taking duplicate images where the
- * user's hand hasn't move => also improve performance so we don't
- * update the app when we don't need to.
+ * This frame cap improve performance a little bit and
+ * ensures the detection is consistent.
  */
-const STEPS_PER_SEC = 25
+const STEPS_PER_SEC = 30
 
 /**
  * Tracks how long in second each step should take.

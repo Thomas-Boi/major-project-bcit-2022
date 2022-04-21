@@ -106,10 +106,15 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0), scene)
 		camera.attachControl(canvas, true)
 		
-		let light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-		light.diffuse = new BABYLON.Color3(1, 1, 1);
-		light.specular = new BABYLON.Color3(0, 0, 0);
-		light.intensity = 3
+		let mainLight = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(-1, -1, 0), scene);
+		mainLight.diffuse = new BABYLON.Color3(1, 1, 1);
+		mainLight.specular = new BABYLON.Color3(1, 1, 0);
+		mainLight.intensity = 3
+
+		let hemisLight = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), scene);
+		hemisLight.diffuse = new BABYLON.Color3(1, 1, 1);
+		hemisLight.specular = new BABYLON.Color3(0, 0, 0);
+		hemisLight.intensity = 3
 
 
 		BABYLON.SceneLoader.ImportMeshAsync("", process.env.PUBLIC_URL + "/", "Earth.glb", scene)
@@ -134,10 +139,10 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		// 	size: 0.5
 		// }, scene)
 
-		// attach the render callback
+		// // attach the render callback
 		// this.engine.runRenderLoop(() => scene.render())
 
-		// handle resizing
+		// // handle resizing
 		// window.addEventListener("resize", this.resize)
 	}
 
@@ -232,13 +237,13 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		// has to flip vertical footage since image y-axis run top to bottom (increase downward like js)
 		let verticalDelta = -getDelta(hand.wrist.y, prevHand.wrist.y)
 
-		if (Math.abs(horizontalDelta) > 0.005) {
+		// if (Math.abs(horizontalDelta) > 0.004) {
 			this.mesh.translate(BABYLON.Axis.X, TRANSLATE_MULTIPLIER * horizontalDelta, BABYLON.Space.WORLD)
-		}
+		// }
 
-		if (Math.abs(verticalDelta) > 0.005) {
+		// if (Math.abs(verticalDelta) > 0.004) {
 			this.mesh.translate(BABYLON.Axis.Y, TRANSLATE_MULTIPLIER * verticalDelta, BABYLON.Space.WORLD)
-		}
+		// }
 	}
 
 	/**
