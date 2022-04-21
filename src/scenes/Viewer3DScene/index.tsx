@@ -9,6 +9,8 @@ import "./index.css"
 import { SceneProps } from "react-app-env"
 import "babylonjs-loaders"
 
+/* see configurations at bottom of file. */
+
 interface IState {
 	/**
 	 * Whether to remove the instruction scene.
@@ -24,33 +26,6 @@ interface IState {
 	 * The progress for the progress bar in the StatusBar component.
 	 */
 	progress: undefined | number
-}
-
-// for interacting with the cube
-const TRANSLATE_MULTIPLIER = 6
-const ROTATE_MULTIPLIER = 6
-const SCALE_MULTIPLIER = 4
-
-// tracks how long the user needs to hold their
-// hand to activate something
-const RESET_COUNTER_THRESHOLD_MILISEC = 1000
-const START_THRESHOLD_MILISEC = 1000
-
-// for registering the callbacks to the GestureDetector
-const removeKeyName = "3Dremove"
-const updateKeyName = "3Dupdate"
-
-/**
- * Convert the valid gesture name to a command name.
- */
-const gestureCommandObj = {
-	[Gesture.GRAB_FIST.name]: "TRANSLATE",
-	[Gesture.ONE.name]: "ROTATE Y",
-	[Gesture.ONE_HORIZONTAL.name]: "ROTATE X",
-	[Gesture.THUMBS_UP.name]: "SCALE",
-	[Gesture.L_SHAPE.name]: "RESET",
-	[Gesture.FIVE.name]: "NEUTRAL",
-	[Gesture.GRAB_THUMBS_OUT.name]: "BACK",
 }
 
 export default class Viewer3DScene extends React.Component<SceneProps, IState> {
@@ -299,4 +274,59 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		this.mesh.rotation = new BABYLON.Vector3(0, 0, 0)
 	}
 
+}
+
+/////// TRANSFORMATION /////// 
+/**
+ * Multiplier for the translation since hand movement is too small.
+ */
+const TRANSLATE_MULTIPLIER = 6
+
+/**
+ * Multiplier for the rotation since hand movement is too small.
+ */
+const ROTATE_MULTIPLIER = 6
+
+/**
+ * Multiplier for the rotation since hand movement is too small.
+ */
+const SCALE_MULTIPLIER = 4
+
+
+
+/////// TRACK TIME FOR HOLDING A GESTURE /////// 
+/**
+ * Amount of time the user need to hold the reset gesture to actually reset.
+ */
+const RESET_COUNTER_THRESHOLD_MILISEC = 1000
+
+/**
+ * Amount of time the user need to hold the start gesture to actually reset.
+ */
+const START_THRESHOLD_MILISEC = 1000
+
+
+
+/////// for registering the callbacks to the GestureDetector /////// 
+/**
+ * Key name for the remove function.
+ */
+const removeKeyName = "3Dremove"
+
+/**
+ * Key name for the update function.
+ */
+const updateKeyName = "3Dupdate"
+
+/**
+ * Convert the valid gesture name to a command name.
+ */
+const gestureCommandObj = {
+	[Gesture.GRAB_FIST.name]: "TRANSLATE",
+	[Gesture.ONE.name]: "ROTATE Y",
+	[Gesture.ONE_HORIZONTAL.name]: "ROTATE X",
+	[Gesture.THUMBS_UP.name]: "SCALE",
+	[Gesture.L_SHAPE.name]: "RESET",
+	[Gesture.FIVE.name]: "NEUTRAL",
+	[Gesture.GRAB_THUMBS_OUT.name]: "BACK",
 }
