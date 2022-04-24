@@ -28,6 +28,7 @@ export interface IncantationProps {
    * The y position as a pixel value.
    */
   y: number;
+
 	
   /**
    * How long the incantation has after it is spawned until it's removed
@@ -39,7 +40,7 @@ export interface IncantationProps {
    * Whether the incantation is visible to the user.
    */
   isVisible: boolean;
- 
+
 	/**
 	 * The image associated with the incantation.
 	 * Include extension name (e.g "lightning.png").

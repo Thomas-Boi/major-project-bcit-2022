@@ -1,5 +1,5 @@
 import style from "./index.module.css"
-import React, { SyntheticEvent } from "react"
+import React  from "react"
 import { SceneProps } from "react-app-env"
 // @ts-ignore
 import video from "assets/video/HolographicShowMusic.mp4"

@@ -89,7 +89,7 @@ export default class Viewer3DScene extends React.Component<SceneProps, IState> {
 		let hemisLight = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), scene);
 		hemisLight.diffuse = new BABYLON.Color3(1, 1, 1);
 		hemisLight.specular = new BABYLON.Color3(0, 0, 0);
-		hemisLight.intensity = 3
+		hemisLight.intensity = 1
 
 
 		BABYLON.SceneLoader.ImportMeshAsync("", process.env.PUBLIC_URL + "/", "Earth.glb", scene)
