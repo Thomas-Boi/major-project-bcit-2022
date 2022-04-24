@@ -2,7 +2,7 @@ import style from "./index.module.css"
 import React from "react"
 import { SceneProps } from "react-app-env"
 import Hand from "services/Hand"
-import {Incantation, INCANTATION_SIZE} from "components/Incantation"
+import {Incantation, INCANTATION_SIZE, IncantationData} from "components/Incantation"
 import {getRandomInt, getRandomValue, areRangesOverlap} from "services/util"
 import * as Gesture from "services/Gesture"
 
@@ -17,9 +17,9 @@ import lightningVid from "assets/video/lightning.mp4"
 
 interface IState {
 	/**
-	 * The current video name 
+	 * The current video source.
 	 */
-	curVideoName: string
+	curVideoSrc: string
 
 	/**
 	 * The current gesture the user is making.
@@ -32,9 +32,9 @@ interface IState {
 	gestureStartTime: number
 
   /**
-   * The items we will be rendering on the screen.
+   * The incantation pool we can use to display things on the screen.
    */
-  activeIncants: Array<IncantationData>
+  incantPool: Array<IncantationData>
 }
 
 export default class EatherScene extends React.Component<SceneProps, IState> {
@@ -45,7 +45,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 	videoPlaying: boolean
 
   /**
-   * Store the interval object so we can remove it when dismount.
+   * Store the spawn interval object so we can remove it when dismount.
    */
   intervalObj: ReturnType<typeof setInterval>
 
@@ -56,11 +56,18 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 
 	constructor(props: SceneProps) {
 		super(props)
+    
+    // init the incants (object pool pattern)
+    let incantPool = []
+    for (let i = 0; i < MAX_INCANTATION_AMOUNT; i++) {
+      incantPool.push(new IncantationData())
+    }
+
 		this.state = {
-			curVideoName: "lightning",
+			curVideoSrc: "",
 			curGesture: null,
 			gestureStartTime: 0,
-			activeIncants: []
+			incantPool
 		}
 
 		this.videoPlaying = false
@@ -69,49 +76,45 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 	}
 
   render() {
-    if (!this.videoPlaying && this.intervalObj === null) {
-      this.intervalObj = setInterval(this.spawn, SPAWNER_TIMESTEP_MILISEC)
-    }
-
-    // check gestures and see if it matches anything on screen
-    // if it does, we set it as active
-    let active = this.state.activeIncants.find(incant => {
-      return incantsConfig[incant.name].gesture === this.state.curGesture
-    })
-
     // render the incantations
-    let items = this.state.activeIncants.map((data, index) => {
-      let selected = data.name === active?.name
-      return <Incantation key={index} x={data.x} y={data.y} imgUrl={incantsConfig[data.name].imgUrl} selected={selected} />
+    let items = this.state.incantPool.map((data, index) => {
+      return <Incantation key={index} // keep key constant 
+        {...data}
+				imgUrl={incantsConfig[data.name]?.imgUrl} 
+				selected={data.name === this.selectedIncantName} 
+				removeIncant={this.removeIncantation.bind(this, index)}/> 
     })
 
     return (
 			<div className={style.container}>
 				{items}
-        <video className={style.video} src={this.state.curVideoName} autoPlay onEnded={this.onVideoEnded}></video>
+        <video className={style.video} src={this.state.curVideoSrc} autoPlay onEnded={this.onVideoEnded}></video>
       </div>
     )
   }
 
+	/**
+	 * After scene is rendered, check whether the user is performing any gesture
+	 * that matches one on the screen. 
+   * This code MUST be in this lifecycle method because it will modify 
+   * the state of the component.
+	 */
   componentDidUpdate(): void {
-    let active = this.state.activeIncants.find(incant => {
-      return incantsConfig[incant.name].gesture === this.state.curGesture
+    let active = this.state.incantPool.find(incant => {
+      return incantsConfig[incant.name]?.gesture === this.state.curGesture
     })
 
+		// check if the active gesture is the same one we have been holding
     if (active?.name === this.selectedIncantName) {
       // check time hold
 			if (Date.now() - this.state.gestureStartTime >= PLAY_VID_THRESHOLD_TIME_MILI) {
-        // stop spawning for now
-        clearInterval(this.intervalObj)
-        this.intervalObj = null
-
         // remove all gestures
-        this.setState({activeIncants: []})
         this.playVideo(incantsConfig[active.name].vidUrl)
+        // this.setState({incantPool: []})
 			}
     }
+		// if not the same one, set it to this new one
     else this.selectedIncantName = active?.name ? active.name : ""
-    
   }
 
 
@@ -130,10 +133,12 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 			Object.values(incantsConfig)
 				.map(config => config.gesture))
 
+		// start spawning
     this.intervalObj = setInterval(this.spawn, SPAWNER_TIMESTEP_MILISEC)
 	}
 
 	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
+		// do nothing if a video is playing => save computation cycles
 		if (this.videoPlaying) {
 			return
 		}
@@ -151,7 +156,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 	playVideo = (vidName: string) => {
 		if (this.videoPlaying) return
 		this.videoPlaying = true
-		this.setState({curVideoName: vidName})
+		this.setState({curVideoSrc: vidName})
 	}
 
 	/**
@@ -162,34 +167,35 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 	}
 
   spawn = () => {
-    // check if we can add more incantation
-    if (this.state.activeIncants.length >= MAX_INCANTATION_AMOUNT) {
+    // check if we can add more incantation by seeing whether there are any
+    // inactive incant we can use
+    let invisibleIncantIndex = this.state.incantPool.findIndex(incant => !incant.isVisible)
+    if (this.videoPlaying || invisibleIncantIndex === -1) {
       return
     }
 
-    // randomly spawn an incantation
+    // randomly spawn an incantation by activating an invisible incantation.
     if (getRandomInt(1, 10) <= SPAWN_PROBABILITY_NUM) {
-      let copy = this.state.activeIncants.slice()
-      copy.push(this.createNewIncantation())
-      this.setState({activeIncants: copy})
+      let copy = this.state.incantPool.slice()
+      // console.log("before", copy[invisibleIncantIndex])
+      this.activateIncantation(copy[invisibleIncantIndex])
+      // console.log("after", copy[invisibleIncantIndex])
+      this.setState({incantPool: copy})
     }
   }
 
   /**
-   * Create a new incantation, This must not 
-   * be an incantation already on the screen.
-   * @returns 
+   * Active the incantation passed in. This will modify the
+   * object directly.
    */
-  createNewIncantation(): IncantationData {
-    // get an inactive incants
-    let inactiveIncants = this.getInactiveIncantNames()
-    let incant = getRandomValue(inactiveIncants)
-
+  activateIncantation(incant: IncantationData) {
     // calculate the x and y values so that our new gesture won't overlap with them
     // first, just pick a random coord
     let possibleX = getRandomInt(0, SPAWN_X_UPPER_BOUND)
     let possibleY = getRandomInt(0, SPAWN_Y_UPPER_BOUND)
-    for (let {x, y} of this.state.activeIncants) {
+    for (let {x, y, isVisible} of this.state.incantPool) {
+      if (!isVisible) continue
+
       // test whether the dimensions would overlap
       let overlapped = areRangesOverlap(x, x + INCANTATION_SIZE, possibleX, possibleX + INCANTATION_SIZE) 
         && areRangesOverlap(y, y + INCANTATION_SIZE, possibleY, possibleY + INCANTATION_SIZE)
@@ -201,39 +207,42 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
       }
     }
 
-    return {
-      name: incant,
-      x: possibleX,
-      y: possibleY
-    }
+    // get the new name
+    let availableNames = this.getUnusedIncantNames()
+    // set the values needed so the incant will be shown on the screen.
+    incant.activate(
+      possibleX, possibleY, 
+      getRandomInt(INCANT_TIME_TO_LIVE_MIN, INCANT_TIME_TO_LIVE_MAX),
+      getRandomValue(availableNames))
   }
 
   /**
-   * Get all the unused incantations.
+   * Get unused incantation name.
    */
-  getInactiveIncantNames(): Array<string> {
-    let inactive = []
-    let activeNames = Object.values(this.state.activeIncants)
-      .map(active => active.name)
+  getUnusedIncantNames(): Array<string> {
+    let inactiveNames = Object.keys(incantsConfig)
+    for (let incant of this.state.incantPool) {
+      if (!incant.isVisible) continue
 
-    for (let name of Object.keys(incantsConfig)) {
-      // check if they are in the activeIncants
-      if (!activeNames.includes(name)) {
-        inactive.push(name)
+      let index = inactiveNames.findIndex(name => name === incant.name)
+      if (index !== -1) {
+        inactiveNames.splice(-1, 1)
       }
     }
-    return inactive
+    return inactiveNames
   }
 
   /**
    * Remove the incantation at this index.
-   * @param index the key 
+   * This just means set it to invisible.
+   * @param index - the index of the incantation we 
+   * are "removing".
    */
-  removeIncantation(index: number) {
+  removeIncantation = (index: number) => {
     // make a copy then modify it
-    let copy = this.state.activeIncants.slice()
-    copy.splice(index, 1) // remove one item at this space
-    this.setState({activeIncants: copy})
+    let copy = this.state.incantPool.slice()
+    copy[index].isVisible = false
+    this.setState({incantPool: copy})
   }
 
   /**
@@ -272,16 +281,17 @@ const SPAWN_X_UPPER_BOUND = window.innerWidth - INCANTATION_SIZE
 const SPAWN_Y_UPPER_BOUND = window.innerHeight - INCANTATION_SIZE 
 
 
-/////////////// SPAWNER CONFIG //////////////////
+
+/////////////// INCANTATION CONFIG //////////////////
+/**
+ * The minimum time an incantation has to live.
+ */
+const INCANT_TIME_TO_LIVE_MIN = 2000
 
 /**
- * An object mapping the gesture image to its name.
+ * The maximum time an incantation has to live.
  */
-const gestures = {
-  [Gesture.FIVE.name]: fiveImg,
-  [Gesture.ONE.name]: oneImg,
-  [Gesture.TWO.name]: twoImg
-}
+const INCANT_TIME_TO_LIVE_MAX = 5000
 
 /**
  * The configuration detail of an incantation.
@@ -306,22 +316,6 @@ interface IncantationConfig {
   gesture: Gesture.Gesture
 }
 
-interface IncantationData {
-  /**
-   * Name of the incantation.
-   */
-  name: string
-
-  /**
-   * The x position as a pixel value.
-   */
-  x: number;
-
-  /**
-   * The y position as a pixel value.
-   */
-  y: number;
-}
 
 /**
  * An object mapping an incantation to its properties: image, video, and gestures.
@@ -344,4 +338,7 @@ const incantsConfig: {[key: string]: IncantationConfig} = {
   }
 }
 
+/**
+ * How long the user need to hold the gesture before we play the video.
+ */
 const PLAY_VID_THRESHOLD_TIME_MILI = 3000

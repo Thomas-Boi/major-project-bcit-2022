@@ -1,6 +1,5 @@
 .img {
   height: auto;
   width: 20%;
-  opacity: 0.5;
-  transition: transform 3s, opacity 3s;
+  opacity: 0;
 }
