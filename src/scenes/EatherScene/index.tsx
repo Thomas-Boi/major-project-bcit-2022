@@ -7,9 +7,9 @@ import {getRandomInt, getRandomValue, areRangesOverlap} from "services/util"
 import * as Gesture from "services/Gesture"
 
 // assets
-import fiveImg from "assets/img/five.png"
-import oneImg from "assets/img/one.png"
-import twoImg from "assets/img/two.png"
+import fiveImg from "assets/img/five_square.png"
+import oneImg from "assets/img/one_square.png"
+import grabFistImg from "assets/img/grab_fist_square.png"
 // @ts-ignore
 import lightningVid from "assets/video/lightning.mp4"
 
@@ -195,14 +195,14 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
       if (!isVisible) continue
 
       // test whether the dimensions would overlap
-      let overlapped = areRangesOverlap(x, x + INCANTATION_SIZE, possibleX, possibleX + INCANTATION_SIZE) 
-        && areRangesOverlap(y, y + INCANTATION_SIZE, possibleY, possibleY + INCANTATION_SIZE)
+      // let overlapped = areRangesOverlap(x, x + INCANTATION_SIZE, possibleX, possibleX + INCANTATION_SIZE) 
+      //   && areRangesOverlap(y, y + INCANTATION_SIZE, possibleY, possibleY + INCANTATION_SIZE)
 
-      if (overlapped) {
-        // get a new random value
-        possibleX = getRandomInt(0, SPAWN_X_UPPER_BOUND)
-        possibleY = getRandomInt(0, SPAWN_Y_UPPER_BOUND)
-      }
+      // if (overlapped) {
+      //   // get a new random value
+      //   possibleX = getRandomInt(0, SPAWN_X_UPPER_BOUND)
+      //   possibleY = getRandomInt(0, SPAWN_Y_UPPER_BOUND)
+      // }
     }
 
     // get the new name
@@ -215,11 +215,17 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
   }
 
   /**
+   * Find the availa
+   */
+  findAvailableSpace() {
+    
+  }
+
+  /**
    * Get unused incantation name.
    */
   getUnusedIncantNames(): Array<string> {
     let inactiveNames = Object.keys(incantsConfig)
-    console.log(JSON.stringify(this.state.incantPool))
     for (let incant of this.state.incantPool) {
       // console.log(incant.name, incant.isVisible)
       if (!incant.isVisible) continue
@@ -230,7 +236,6 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
         inactiveNames.splice(index, 1)
       }
     }
-    console.log(JSON.stringify(inactiveNames))
     return inactiveNames
   }
 
@@ -270,7 +275,7 @@ const MAX_INCANTATION_AMOUNT = 3
 /**
  * The probability of spawning an incantation out of 10.
  */
-const SPAWN_PROBABILITY_NUM = 4
+const SPAWN_PROBABILITY_NUM = 10
 
 /**
  * The maximum x value an Incantation can be spawned with.
@@ -336,7 +341,7 @@ const incantsConfig: {[key: string]: IncantationConfig} = {
   "rain": {
     "gesture": Gesture.TWO,
     "vidUrl": lightningVid,
-    "imgUrl": twoImg
+    "imgUrl": grabFistImg
   }
 }
 

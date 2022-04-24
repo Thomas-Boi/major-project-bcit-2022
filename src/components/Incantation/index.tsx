@@ -59,11 +59,6 @@ export interface IncantationProps {
 }
 
 /**
- * The size (width or height) of an incantation image in pixel.
- */
-export const INCANTATION_SIZE = document.body.clientWidth * 0.2
-
-/**
  * An incantation that the user can interact with.
  * @param props 
  * @returns 
@@ -141,6 +136,11 @@ export class Incantation extends React.Component<IncantationProps, IState> {
     }, FADE_TIME_MILI + 100) // buffer time to ensure gesture faded away
   }
 }
+
+/**
+ * The size (width or height) of an incantation image in pixel.
+ */
+export const INCANTATION_SIZE = window.innerWidth * 0.2
 
 /**
  * Time it takes for the incantation to fade away.
