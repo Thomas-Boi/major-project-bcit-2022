@@ -177,9 +177,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
     // randomly spawn an incantation by activating an invisible incantation.
     if (getRandomInt(1, 10) <= SPAWN_PROBABILITY_NUM) {
       let copy = this.state.incantPool.slice()
-      // console.log("before", copy[invisibleIncantIndex])
       this.activateIncantation(copy[invisibleIncantIndex])
-      // console.log("after", copy[invisibleIncantIndex])
       this.setState({incantPool: copy})
     }
   }
@@ -221,14 +219,18 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
    */
   getUnusedIncantNames(): Array<string> {
     let inactiveNames = Object.keys(incantsConfig)
+    console.log(JSON.stringify(this.state.incantPool))
     for (let incant of this.state.incantPool) {
+      // console.log(incant.name, incant.isVisible)
       if (!incant.isVisible) continue
 
+      // remove the incantations that are visible
       let index = inactiveNames.findIndex(name => name === incant.name)
       if (index !== -1) {
-        inactiveNames.splice(-1, 1)
+        inactiveNames.splice(index, 1)
       }
     }
+    console.log(JSON.stringify(inactiveNames))
     return inactiveNames
   }
 

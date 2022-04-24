@@ -5,9 +5,9 @@ import CSS from "csstype"
 // see configs data at the bottom of file
 interface IState {
   /**
-   * Whether the incantation is fading away.
+   * When the incantation should start fading out.
    */
-  isFadingAway: boolean
+  startFadingOut: boolean
 }
 
 /**
@@ -73,12 +73,20 @@ export class Incantation extends React.Component<IncantationProps, IState> {
    * The timer for when the incantation disappear.
    */
   timeoutTimer: ReturnType<typeof setInterval>
+  
+  /**
+   * Whether the incantation is in the process of fading out.
+   */
+  isFadingOut: boolean
+
 
   constructor(props: IncantationProps) {
     super(props)
     this.state = {
-      isFadingAway: false
+      startFadingOut: false
     }
+
+    this.isFadingOut = false
   }
 
   render() {
@@ -102,14 +110,17 @@ export class Incantation extends React.Component<IncantationProps, IState> {
     // if incant is being selected => it cannot fade away
     // if incant is fading away => it cannot be selected
     // if both are true => select the one that happens first
-    if (this.props.selected) {
+    
+    // only go into select mode is we aren't fading out currently
+    if (this.props.selected && !this.isFadingOut) {
       style.transform += " scale(1.2)"
       style.opacity = 1
       style.transition = SELECTED_TRANSITION
     }
-    // use else if so we never fade away while being selected
-    else if (this.state.isFadingAway) {
+    // use else if so we never start fade out while being selected
+    else if (this.state.startFadingOut) {
       style.opacity = 0
+      this.isFadingOut = true
     }
 
     return (
@@ -121,11 +132,12 @@ export class Incantation extends React.Component<IncantationProps, IState> {
    * Fade away and disappear from the screen.
    */
   fadeAway = () => {
-    this.setState({isFadingAway: true})
+    this.setState({startFadingOut: true})
     setTimeout(() => {
       this.props.removeIncant()
       this.timeoutTimer = undefined // reset so we can now restart the timer
-      this.setState({isFadingAway: false}) // not fading away anymore
+      this.setState({startFadingOut: false}) // not fading away anymore
+      this.isFadingOut = false
     }, FADE_TIME_MILI + 100) // buffer time to ensure gesture faded away
   }
 }
