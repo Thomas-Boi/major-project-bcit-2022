@@ -71,7 +71,7 @@ export class Incantation extends React.Component<IncantationProps, IState> {
       }
       if (this.timeoutTimer === undefined) {
         // start keepin track of live time only after it's visible FOR THE FIRST TIME
-        this.timeoutTimer = setTimeout(this.fadeAway, this.props.timeToLive)
+        this.timeoutTimer = setTimeout(this.fadeOut, this.props.timeToLive)
       }
     }
 
@@ -93,14 +93,34 @@ export class Incantation extends React.Component<IncantationProps, IState> {
     }
 
     return (
-      <img src={this.props.imgUrl} className={cssFile.img} style={style} alt='An Incantation'/>
+      <div className={cssFile.container} style={style}>
+        <img src={this.props.imgUrl} className={cssFile.img} alt='An Incantation'/>
+        <div>{this.props.displayName}</div>
+      </div>
     )
   }
 
   /**
-   * Fade away and disappear from the screen.
+   * Check whether the EatherScene want to force fade out => update the scene again.
+   * @param prevProps 
+   * @param prevState 
+   * @param snapshot 
    */
-  fadeAway = () => {
+  componentDidUpdate(prevProps: Readonly<IncantationProps>, prevState: Readonly<IState>, snapshot?: any): void {
+    if (prevProps.forceFadeOut === this.props.forceFadeOut) return
+
+    if (this.props.forceFadeOut) {
+      // clear the timer since this was manually triggered
+      clearTimeout(this.timeoutTimer)
+      this.fadeOut() // manually start fading out
+    }
+    
+  }
+
+  /**
+   * Fade out and disappear from the screen.
+   */
+  fadeOut = () => {
     this.setState({startFadingOut: true})
     setTimeout(() => {
       this.props.removeIncant()
@@ -117,9 +137,19 @@ export class Incantation extends React.Component<IncantationProps, IState> {
 export const INCANTATION_SIZE = window.innerWidth * 0.2
 
 /**
+ * The height of the text for the incantation.
+ */
+export const TEXT_HEIGHT = (function () {
+  // use anon function so we don't have cluttered global
+  let root = document.documentElement
+  let style = window.getComputedStyle(root).fontSize
+  return parseFloat(style)
+})()
+
+/**
  * Time it takes for the incantation to fade away.
  */
-const FADE_TIME_MILI = 1500
+const FADE_TIME_MILI = 3000
 
 /**
  * The opacity for when the incantation finish fading in.
@@ -138,9 +168,15 @@ const SELECTED_TRANSITION = "transform 3s, opacity 3s"
  */
 export class IncantationData {
   /**
-   * Name of the incantation.
+   * Name of the incantation (logic, not meant for UI).
    */
   name: string
+  
+  /**
+   * The gesture name that we will display to the user.
+   */
+  displayName: string
+
 
   /**
    * The x position as a pixel value.
@@ -162,4 +198,10 @@ export class IncantationData {
    * Whether the incantation is visible to the user.
    */
   isVisible: boolean;
+
+  /**
+   * Whether the incantation should start fading out right away (even before
+   * its timeTolive finishes).
+   */
+  forceFadeOut: boolean
 }

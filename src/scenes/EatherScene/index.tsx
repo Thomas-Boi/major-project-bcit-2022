@@ -2,7 +2,7 @@ import style from "./index.module.css"
 import React from "react"
 import { SceneProps } from "react-app-env"
 import Hand from "services/Hand"
-import {Incantation, INCANTATION_SIZE, IncantationData} from "components/Incantation"
+import {Incantation, INCANTATION_SIZE, TEXT_HEIGHT, IncantationData} from "components/Incantation"
 import {getRandomInt, getRandomValue } from "services/util"
 import * as Gesture from "services/Gesture"
 import RangeNode from "services/RangeNode"
@@ -79,6 +79,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
   render() {
     // render the incantations
     let items = this.state.incantPool.map((data, index) => {
+      // get a random display name to show that matches the data.name
       return <Incantation key={index} // keep key constant 
         {...data}
 				imgUrl={incantsConfig[data.name]?.imgUrl} 
@@ -93,31 +94,6 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
       </div>
     )
   }
-
-	/**
-	 * After scene is rendered, check whether the user is performing any gesture
-	 * that matches one on the screen. 
-   * This code MUST be in this lifecycle method because it will modify 
-   * the state of the component.
-	 */
-  componentDidUpdate(): void {
-    let active = this.state.incantPool.find(incant => {
-      return incantsConfig[incant.name]?.gesture === this.state.curGesture
-    })
-
-		// check if the active gesture is the same one we have been holding
-    if (active?.name === this.selectedIncantName) {
-      // check time hold
-			if (Date.now() - this.state.gestureStartTime >= PLAY_VID_THRESHOLD_TIME_MILI) {
-        // remove all gestures
-        this.playVideo(incantsConfig[active.name].vidUrl)
-        // this.setState({incantPool: []})
-			}
-    }
-		// if not the same one, set it to this new one
-    else this.selectedIncantName = active?.name ? active.name : ""
-  }
-
 
 	/**
 	 * Add gestures to detect and start the spawning process.
@@ -138,16 +114,42 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
     this.intervalObj = setInterval(this.spawn, SPAWNER_TIMESTEP_MILISEC)
 	}
 
+  /**
+   * Check whether the user is making a gesture that matches a gesture on the screen.
+   * @param hand 
+   * @param prevHand 
+   * @param curGesture 
+   * @param gestureStartTime 
+   * @returns 
+   */
 	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
 		// do nothing if a video is playing => save computation cycles
 		if (this.videoPlaying) {
 			return
 		}
 
-		this.setState({
-			curGesture,
-			gestureStartTime
-		})
+		// this.setState({
+		// 	curGesture,
+		// 	gestureStartTime
+		// })
+    let active = this.state.incantPool.find(incant => {
+      return incantsConfig[incant.name]?.gesture === curGesture
+    })
+
+		// check if the active gesture is the same one we have been holding
+    if (active?.name === this.selectedIncantName) {
+      // check time hold
+			if (Date.now() - gestureStartTime >= PLAY_VID_THRESHOLD_TIME_MILI) {
+        this.playVideo(incantsConfig[active.name].vidUrl)
+        // remove all gestures
+        this.setState({incantPool: this.state.incantPool.map(incant => {
+          incant.isVisible = false
+          return incant
+        })})
+			}
+    }
+		// if not the same one, set it to this new one
+    else this.selectedIncantName = active?.name ? active.name : ""
 	}
 
 	/**
@@ -165,6 +167,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 	 */
 	onVideoEnded = () => {
 		this.videoPlaying = false
+		this.setState({curVideoSrc: ""}) // reset video to none
 	}
 
   spawn = () => {
@@ -202,6 +205,8 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
     incant.y = y
     incant.timeToLive = getRandomInt(INCANT_TIME_TO_LIVE_MIN, INCANT_TIME_TO_LIVE_MAX)
     incant.name = getRandomValue(availableNames)
+    let dictionary = incantsConfig[incant.name]?.dictionary
+    incant.displayName = getRandomValue(dictionary)
     incant.isVisible = true
   }
 
@@ -314,8 +319,7 @@ const SPAWN_X_UPPER_BOUND = window.innerWidth
 /**
  * The maximum y value an Incantation can be spawned with.
  */
-const SPAWN_Y_UPPER_BOUND = window.innerHeight - INCANTATION_SIZE 
-
+const SPAWN_Y_UPPER_BOUND = window.innerHeight - INCANTATION_SIZE - TEXT_HEIGHT
 
 
 /////////////// INCANTATION CONFIG //////////////////
@@ -350,6 +354,13 @@ interface IncantationConfig {
    * The gesture associated with this Incantation.
    */
   gesture: Gesture.Gesture
+
+  /**
+   * Hold the words in other languages associated 
+   * with the Incantation name. The languages chosen are:
+   * simplified chinese, vietnamese, tagalog, persian and french.
+   */
+  dictionary: Array<string>
 }
 
 
@@ -360,17 +371,20 @@ const incantsConfig: {[key: string]: IncantationConfig} = {
   "lightning": {
     "gesture": Gesture.FIVE,
     "vidUrl": lightningVid,
-    "imgUrl": fiveImg
+    "imgUrl": fiveImg,
+    "dictionary": ["闪电", "chớp", "kidlat", "آذرخش", "éclair"]
   },
   "snow": {
     "gesture": Gesture.ONE,
     "vidUrl": lightningVid,
-    "imgUrl": oneImg
+    "imgUrl": oneImg,
+    "dictionary": ["tuyết"]
   },
   "rain": {
     "gesture": Gesture.TWO,
     "vidUrl": lightningVid,
-    "imgUrl": grabFistImg
+    "imgUrl": grabFistImg,
+    "dictionary": ["mưa"]
   }
 }
 
