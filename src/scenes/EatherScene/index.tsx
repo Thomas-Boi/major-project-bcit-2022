@@ -128,10 +128,6 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 			return
 		}
 
-		// this.setState({
-		// 	curGesture,
-		// 	gestureStartTime
-		// })
     let active = this.state.incantPool.find(incant => {
       return incantsConfig[incant.name]?.gesture === curGesture
     })
@@ -140,12 +136,12 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
     if (active?.name === this.selectedIncantName) {
       // check time hold
 			if (Date.now() - gestureStartTime >= PLAY_VID_THRESHOLD_TIME_MILI) {
-        this.playVideo(incantsConfig[active.name].vidUrl)
         // remove all gestures
         this.setState({incantPool: this.state.incantPool.map(incant => {
           incant.isVisible = false
           return incant
         })})
+        this.playVideo(incantsConfig[active.name].vidUrl)
 			}
     }
 		// if not the same one, set it to this new one
