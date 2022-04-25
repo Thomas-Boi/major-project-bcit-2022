@@ -13,33 +13,7 @@ interface IState {
 /**
  * The incantation props (see IncantationData at bottom of file).
  */
-export interface IncantationProps {
-  /**
-   * Name of the incantation.
-   */
-  name: string
-
-  /**
-   * The x position as a pixel value.
-   */
-  x: number;
-
-  /**
-   * The y position as a pixel value.
-   */
-  y: number;
-
-	
-  /**
-   * How long the incantation has after it is spawned until it's removed
-   * from the screen.
-   */
-  timeToLive: number;
-
-  /**
-   * Whether the incantation is visible to the user.
-   */
-  isVisible: boolean;
+export interface IncantationProps extends IncantationData {
 
 	/**
 	 * The image associated with the incantation.
@@ -188,12 +162,4 @@ export class IncantationData {
    * Whether the incantation is visible to the user.
    */
   isVisible: boolean;
-
-  activate(x: number, y: number, timeToLive: number, name: string) {
-    this.x = x
-    this.y = y
-    this.timeToLive = timeToLive
-    this.name = name
-    this.isVisible = true
-  }
 }

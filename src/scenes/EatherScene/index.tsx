@@ -3,8 +3,9 @@ import React from "react"
 import { SceneProps } from "react-app-env"
 import Hand from "services/Hand"
 import {Incantation, INCANTATION_SIZE, IncantationData} from "components/Incantation"
-import {getRandomInt, getRandomValue, areRangesOverlap} from "services/util"
+import {getRandomInt, getRandomValue } from "services/util"
 import * as Gesture from "services/Gesture"
+import RangeNode from "services/RangeNode"
 
 // assets
 import fiveImg from "assets/img/five_square.png"
@@ -188,38 +189,66 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
    */
   activateIncantation(incant: IncantationData) {
     // calculate the x and y values so that our new gesture won't overlap with them
-    // first, just pick a random coord
-    let possibleX = getRandomInt(0, SPAWN_X_UPPER_BOUND)
-    let possibleY = getRandomInt(0, SPAWN_Y_UPPER_BOUND)
-    for (let {x, y, isVisible} of this.state.incantPool) {
-      if (!isVisible) continue
+    let availableSpacesX = this.findAvailableSpace(0, SPAWN_X_UPPER_BOUND, "x")
+    let chosenRange = getRandomValue(availableSpacesX)
+    let x = getRandomInt(chosenRange.start, chosenRange.end - INCANTATION_SIZE) // minus incant size so we don't overflow
+    let y = getRandomInt(0, SPAWN_Y_UPPER_BOUND)
 
-      // test whether the dimensions would overlap
-      // let overlapped = areRangesOverlap(x, x + INCANTATION_SIZE, possibleX, possibleX + INCANTATION_SIZE) 
-      //   && areRangesOverlap(y, y + INCANTATION_SIZE, possibleY, possibleY + INCANTATION_SIZE)
-
-      // if (overlapped) {
-      //   // get a new random value
-      //   possibleX = getRandomInt(0, SPAWN_X_UPPER_BOUND)
-      //   possibleY = getRandomInt(0, SPAWN_Y_UPPER_BOUND)
-      // }
-    }
 
     // get the new name
     let availableNames = this.getUnusedIncantNames()
     // set the values needed so the incant will be shown on the screen.
-    incant.activate(
-      possibleX, possibleY, 
-      getRandomInt(INCANT_TIME_TO_LIVE_MIN, INCANT_TIME_TO_LIVE_MAX),
-      getRandomValue(availableNames))
+    incant.x = x
+    incant.y = y
+    incant.timeToLive = getRandomInt(INCANT_TIME_TO_LIVE_MIN, INCANT_TIME_TO_LIVE_MAX)
+    incant.name = getRandomValue(availableNames)
+    incant.isVisible = true
   }
 
   /**
-   * Find the availa
+   * Find the available space between start (inclusive) and end (exclusive)
+   * where we can spawn the incantation.
+   * @param start the start value of the range.
+   * @param end the end value of the range.
+   * @param coord the coordinate we want to look for ("x" or "y")
    */
-  findAvailableSpace() {
-    
+  findAvailableSpace(start: number, end: number, coord: "x"|"y"): Array<RangeNode> {
+    // use a tree like structure to do this 
+    // start out with the range of a full screen (0, MAX).
+    let ranges = [new RangeNode(start, end)]
+
+    // then, we check whether there are any spots that are taken.
+    // if there are, we split the tree into two branches.
+    // each child will now represent a range on the left and right side of 
+    // the taken spot.
+    // note: we guarantee that the take spot are always within range of a node.
+    // aka there are no situations where the taken spot overlaps both left and right child.
+    for (let incant of this.state.incantPool) {
+      if (!incant.isVisible) continue
+
+      let takenRange = new RangeNode(incant[coord], incant[coord] + INCANTATION_SIZE)
+
+      // find where this taken range fits aka which range contains it
+      let i = 0
+      for (i; i < ranges.length; i++) {
+        if (ranges[i].start <= takenRange.start && takenRange.end <= ranges[i].end) {
+          break
+        }
+      }
+
+      // generate the new free ranges
+      let curRange = ranges[i]
+      let firstRange = new RangeNode(curRange.start, takenRange.start)
+      let secondRange = new RangeNode(takenRange.end, curRange.end)
+
+      ranges.splice(i, 1, firstRange, secondRange)
+    }
+
+    // only get the ranges that can fit an incantation
+    return ranges.filter(range => range.end - range.start > INCANTATION_SIZE) // >, not >= since the end is exclusive`
   }
+
+
 
   /**
    * Get unused incantation name.
@@ -280,7 +309,7 @@ const SPAWN_PROBABILITY_NUM = 10
 /**
  * The maximum x value an Incantation can be spawned with.
  */
-const SPAWN_X_UPPER_BOUND = window.innerWidth - INCANTATION_SIZE 
+const SPAWN_X_UPPER_BOUND = window.innerWidth 
 
 /**
  * The maximum y value an Incantation can be spawned with.
