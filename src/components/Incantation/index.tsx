@@ -72,39 +72,38 @@ export class Incantation extends React.Component<IncantationProps, IState> {
     if (this.props.isVisible) {
       style =  {
         "transform": `translate(${this.props.x}px, ${this.props.y}px)`,
-        "opacity": FADE_IN_OPACITY,
-        "transition": `opacity ${FADE_TIME_MILI}ms`
+        "transition": `opacity ${FADE_TIME_MILI}ms`,
+        "opacity": FADE_IN_OPACITY
       }
       
+      // add on styling => this depends on the order
+      // if incant is being selected => it cannot fade away
+      // if incant is fading away => it cannot be selected
+      
+      // only go into select mode if we aren't fading out currently
+      if (this.props.selected && !this.isFadingOut) {
+        style.transform += " scale(1.2)"
+        style.transition = SELECTED_TRANSITION
+        style.opacity = 1
+      }
+      // use else if so we never start fade out while being selected
+      else if (this.state.startFadingOut) {
+        style.opacity = 0
+        this.isFadingOut = true
+        // this timer has to be set here since it starts when 
+        // we start fading out
+        if (this.fadeOutTimer === undefined)  {
+          this.fadeOutTimer = this.fadeOutCleanUp(FADE_TIME_MILI) 
+        }
+      }
+
       // force fade out overrides all
       if (this.props.forceFadeOut) {
         style.opacity = 0
+        style.transition = FORCED_FADE_OUT_TRANSITION
       }
-      else {
-        // add on styling => this depends on the order
-        // if incant is being selected => it cannot fade away
-        // if incant is fading away => it cannot be selected
-        
-        // only go into select mode if we aren't fading out currently
-        if (this.props.selected && !this.isFadingOut) {
-          style.transform += " scale(1.2)"
-          style.opacity = 1
-          style.transition = SELECTED_TRANSITION
-        }
-        // use else if so we never start fade out while being selected
-        else if (this.state.startFadingOut) {
-          style.opacity = 0
-          this.isFadingOut = true
-          if (this.fadeOutTimer === undefined)  {
-            this.fadeOutTimer = this.fadeOutCleanUp(FADE_TIME_MILI) 
-          }
-        }
-      }
-
 
     }
-
-
 
     return (
       <div className={cssFile.container} style={style}>
@@ -114,12 +113,20 @@ export class Incantation extends React.Component<IncantationProps, IState> {
     )
   }
 
+  /**
+   * Set the timer for things that relies on props. These are the timeToLive (relies on props.isVisible)
+   * and forceFadeOut.
+   * @param prevProps 
+   * @param prevState 
+   * @param snapshot 
+   */
   componentDidUpdate(prevProps: Readonly<IncantationProps>, prevState: Readonly<IState>, snapshot?: any): void {
     // check for forceFadeOut
     // false then true => we just got triggered to force fade out
     if (!prevProps.forceFadeOut && this.props.forceFadeOut) {
       clearTimeout(this.fadeOutTimer) // remove whatever is present
-      this.fadeOutTimer = this.fadeOutCleanUp(FORCE_FADE_TIME_MILI) 
+      clearTimeout(this.timeToLiveTimer) // end the timer as well here
+      this.fadeOutTimer = this.fadeOutCleanUp(FORCE_FADE_TIME_MILI) // replace with this timer
     }
 
     // check for timeToLiveTimer
@@ -127,7 +134,7 @@ export class Incantation extends React.Component<IncantationProps, IState> {
     if (!prevProps.isVisible && this.props.isVisible) {
       this.timeToLiveTimer = setTimeout(() => {
         this.setState({startFadingOut: true})
-      }, this.props.timeToLive)
+      }, this.props.timeToLive + FADE_TIME_MILI) // includes the fade in time
     }
   }
 
@@ -137,11 +144,11 @@ export class Incantation extends React.Component<IncantationProps, IState> {
    */
   fadeOutCleanUp(time: number) {
     return setTimeout(() => {
+      // order matters here -> we don't want the startFadingOut to stay true
+      this.setState({startFadingOut: false}) // not fading away anymore
       this.props.removeIncant()
-      this.timeToLiveTimer = undefined // reset so we can now restart the timer
       this.isFadingOut = false
       this.fadeOutTimer = undefined
-      this.setState({startFadingOut: false}) // not fading away anymore
     }, time + 10) // buffer time to ensure gesture faded away completely
 
   }
@@ -170,7 +177,7 @@ const FADE_TIME_MILI = 3000
 /**
  * Time it takes for the incantation to fade away.
  */
-const FORCE_FADE_TIME_MILI = 1000
+export const FORCE_FADE_TIME_MILI = 1000
 
 /**
  * The opacity for when the incantation finish fading in.
@@ -186,6 +193,11 @@ const SELECTED_TIME_MILI = 3000
  * The transition specifically for when the incantation is selected.
  */
 const SELECTED_TRANSITION = `transform ${SELECTED_TIME_MILI}ms, opacity ${SELECTED_TIME_MILI}ms`
+
+/**
+ * The transition specifically for when the incantation is being forced to fade out.
+ */
+const FORCED_FADE_OUT_TRANSITION = `opacity ${FORCE_FADE_TIME_MILI}ms`
 
 
 

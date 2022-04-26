@@ -2,7 +2,7 @@ import style from "./index.module.css"
 import React from "react"
 import { SceneProps } from "react-app-env"
 import Hand from "services/Hand"
-import {Incantation, INCANTATION_SIZE, TEXT_HEIGHT, IncantationData} from "components/Incantation"
+import {Incantation, INCANTATION_SIZE, TEXT_HEIGHT, FORCE_FADE_TIME_MILI, IncantationData} from "components/Incantation"
 import {getRandomInt, getRandomValue } from "services/util"
 import * as Gesture from "services/Gesture"
 import RangeNode from "services/RangeNode"
@@ -138,10 +138,19 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 			if (Date.now() - gestureStartTime >= PLAY_VID_THRESHOLD_TIME_MILI) {
         // remove all gestures
         this.setState({incantPool: this.state.incantPool.map(incant => {
-          incant.isVisible = false
+          // don't have to set isVisible to false: the Incantation will do that
+          // via the removeIncantation callback
+          incant.forceFadeOut = true
           return incant
         })})
-        this.playVideo(incantsConfig[active.name].vidUrl)
+
+        setTimeout(() => {
+          this.playVideo(incantsConfig[active.name].vidUrl)
+          this.setState({incantPool: this.state.incantPool.map(incant => {
+            incant.forceFadeOut = false
+            return incant
+          })})
+        }, FORCE_FADE_TIME_MILI + 10) // only play the video after all the incants disappear
 			}
     }
 		// if not the same one, set it to this new one
@@ -162,8 +171,9 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 	 * Handle the event when a video finishes playing.
 	 */
 	onVideoEnded = () => {
-		this.videoPlaying = false
 		this.setState({curVideoSrc: ""}) // reset video to none
+    setTimeout(() => this.videoPlaying = false, REPLAY_WAIT_TIME)
+		
 	}
 
   spawn = () => {
@@ -327,7 +337,7 @@ const INCANT_TIME_TO_LIVE_MIN = 2000
 /**
  * The maximum time an incantation has to live.
  */
-const INCANT_TIME_TO_LIVE_MAX = 5000
+const INCANT_TIME_TO_LIVE_MAX = 4000
 
 /**
  * The configuration detail of an incantation.
@@ -388,3 +398,8 @@ const incantsConfig: {[key: string]: IncantationConfig} = {
  * How long the user need to hold the gesture before we play the video.
  */
 const PLAY_VID_THRESHOLD_TIME_MILI = 3000
+
+/**
+ * The wait time before we replay the video.
+ */
+const REPLAY_WAIT_TIME = 1000
