@@ -27,6 +27,8 @@ import fireVid from "assets/video/fire.mp4"
 import earthVid from "assets/video/earth.mp4"
 // @ts-ignore
 import jellyFishVid from "assets/video/jellyfish.mp4"
+// @ts-ignore
+import smokeVid from "assets/video/smoke.mp4"
 
 /* See configs at bottom of file */
 
@@ -79,7 +81,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
     }
 
 		this.state = {
-			curVideoSrc: "",
+			curVideoSrc: smokeVid,
 			curGesture: null,
 			gestureStartTime: 0,
 			incantPool
@@ -104,7 +106,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
     return (
 			<div className={style.container}>
 				{items}
-        <video className={style.video} src={this.state.curVideoSrc} autoPlay onEnded={this.onVideoEnded}></video>
+        <video className={style.video} src={this.state.curVideoSrc} autoPlay onEnded={this.onVideoEnded} loop={this.state.curVideoSrc === smokeVid}></video>
       </div>
     )
   }
@@ -185,8 +187,10 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 	 * Handle the event when a video finishes playing.
 	 */
 	onVideoEnded = () => {
-		this.setState({curVideoSrc: ""}) // reset video to none
-    setTimeout(() => this.videoPlaying = false, REPLAY_WAIT_TIME)
+    setTimeout(() => {
+      this.setState({curVideoSrc: smokeVid}) 
+      this.videoPlaying = false
+    }, REPLAY_WAIT_TIME)
 		
 	}
 
