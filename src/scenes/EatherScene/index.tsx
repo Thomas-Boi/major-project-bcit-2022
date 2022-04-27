@@ -6,6 +6,7 @@ import {Incantation, INCANTATION_SIZE, TEXT_HEIGHT, FORCE_FADE_TIME_MILI, Incant
 import {getRandomInt, getRandomValue } from "services/util"
 import * as Gesture from "services/Gesture"
 import RangeNode from "services/RangeNode"
+import CSS from "csstype"
 
 // assets
 import fiveImg from "assets/img/five_square.png"
@@ -52,14 +53,20 @@ interface IState {
    * The incantation pool we can use to display things on the screen.
    */
   incantPool: Array<IncantationData>
+
+  /**
+   * The extra style of the video. Used for fading in and out.
+   */
+  videoStyle: CSS.Properties
 }
+
 
 export default class EatherScene extends React.Component<SceneProps, IState> {
 	/**
-	 * Whether the video is playing. During this time,
-	 * the incantations shouldn't be loaded.
+	 * Whether the incantation video (one that needs an incant to be activated) 
+   * is playing. During this time, the incantations shouldn't be loaded.
 	 */
-	videoPlaying: boolean
+	incantVideoPlaying: boolean
 
   /**
    * Store the spawn interval object so we can remove it when dismount.
@@ -84,10 +91,11 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 			curVideoSrc: smokeVid,
 			curGesture: null,
 			gestureStartTime: 0,
-			incantPool
+			incantPool,
+      videoStyle: {}
 		}
 
-		this.videoPlaying = false
+		this.incantVideoPlaying = false
 
     this.selectedIncantName = ""
 	}
@@ -106,7 +114,11 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
     return (
 			<div className={style.container}>
 				{items}
-        <video className={style.video} src={this.state.curVideoSrc} autoPlay onEnded={this.onVideoEnded} loop={this.state.curVideoSrc === smokeVid}></video>
+        <video className={style.video} 
+          src={this.state.curVideoSrc} 
+          autoPlay onEnded={this.onVideoEnded} 
+          loop={this.state.curVideoSrc === smokeVid}
+          style={this.state.videoStyle}></video>
       </div>
     )
   }
@@ -140,7 +152,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
    */
 	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
 		// do nothing if a video is playing => save computation cycles
-		if (this.videoPlaying) {
+		if (this.incantVideoPlaying) {
 			return
 		}
 
@@ -153,19 +165,30 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
       // check time hold
 			if (Date.now() - gestureStartTime >= PLAY_VID_THRESHOLD_TIME_MILI) {
         // remove all gestures
-        this.setState({incantPool: this.state.incantPool.map(incant => {
-          // don't have to set isVisible to false: the Incantation will do that
-          // via the removeIncantation callback
-          incant.forceFadeOut = true
-          return incant
-        })})
+        this.setState({
+          incantPool: this.state.incantPool.map(incant => {
+            // don't have to set isVisible to false: the Incantation will do that
+            // via the removeIncantation callback
+            incant.forceFadeOut = true
+            return incant 
+          }),
+          videoStyle: { // fade out the vid too
+            opacity: 0,
+            transition: `opacity ${FORCE_FADE_TIME_MILI}ms`
+          }
+        })
 
+        // once screen is black, prepare to play vid
         setTimeout(() => {
+          // settings back to normal
+          this.setState({
+            incantPool: this.state.incantPool.map(incant => {
+              incant.forceFadeOut = false
+              return incant
+            }),
+            videoStyle: {}
+          })
           this.playVideo(incantsConfig[active.name].vidUrl)
-          this.setState({incantPool: this.state.incantPool.map(incant => {
-            incant.forceFadeOut = false
-            return incant
-          })})
         }, FORCE_FADE_TIME_MILI + 10) // only play the video after all the incants disappear
 			}
     }
@@ -178,8 +201,8 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 	 * @param vidName the video name
 	 */
 	playVideo = (vidName: string) => {
-		if (this.videoPlaying) return
-		this.videoPlaying = true
+		if (this.incantVideoPlaying) return
+		this.incantVideoPlaying = true
 		this.setState({curVideoSrc: vidName})
 	}
 
@@ -187,10 +210,22 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 	 * Handle the event when a video finishes playing.
 	 */
 	onVideoEnded = () => {
+    this.setState({videoStyle: {
+      opacity: 0 // prepare to fade in the video => has to be invisible first
+    }}) 
+
     setTimeout(() => {
-      this.setState({curVideoSrc: smokeVid}) 
-      this.videoPlaying = false
-    }, REPLAY_WAIT_TIME)
+      this.setState({
+        curVideoSrc: smokeVid,
+        videoStyle: {
+          transition: `opacity ${VIDEO_END_WAIT_TIME - SMOKE_FADE_IN_TIME}ms`
+        }
+      }) 
+    }, SMOKE_FADE_IN_TIME)
+
+    setTimeout(() => {
+      this.incantVideoPlaying = false
+    }, VIDEO_END_WAIT_TIME)
 		
 	}
 
@@ -198,7 +233,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
     // check if we can add more incantation by seeing whether there are any
     // inactive incant we can use
     let invisibleIncantIndex = this.state.incantPool.findIndex(incant => !incant.isVisible)
-    if (this.videoPlaying || invisibleIncantIndex === -1) {
+    if (this.incantVideoPlaying || invisibleIncantIndex === -1) {
       return
     }
 
@@ -437,12 +472,20 @@ const incantsConfig: {[key: string]: IncantationConfig} = {
   }
 }
 
+/////////////// VIDEO RELATED CONFIG //////////////////
 /**
  * How long the user need to hold the gesture before we play the video.
  */
 const PLAY_VID_THRESHOLD_TIME_MILI = 3000
 
 /**
- * The wait time before we replay the video.
+ * The wait time after an incant video played before we return
+ * to spawning incantations.
  */
-const REPLAY_WAIT_TIME = 1000
+const VIDEO_END_WAIT_TIME = 3000
+
+/**
+ * After an incantation vid finished playing, wait this
+ * long before the smoke reappearts.
+ */
+const SMOKE_FADE_IN_TIME = 1000
