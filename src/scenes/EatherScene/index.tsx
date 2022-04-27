@@ -9,12 +9,12 @@ import RangeNode from "services/RangeNode"
 import CSS from "csstype"
 
 // assets
-import fiveImg from "assets/img/five_square.png"
-import oneImg from "assets/img/one_square.png"
-import twoImg from "assets/img/two.png"
-import oneHorizontalImg from "assets/img/rotate_x.png"
-import lShapeImg from "assets/img/reset.png"
-import grabFistImg from "assets/img/grab_fist_square.png"
+import fiveImg from "assets/img/eather/five_incant.png"
+import oneImg from "assets/img/eather/one_incant.png"
+import twoImg from "assets/img/eather/two_incant.png"
+import oneHorizontalImg from "assets/img/eather/one_horizontal_incant.png"
+import lShapeImg from "assets/img/eather/l_shape_incant.png"
+import grabFistImg from "assets/img/eather/grab_fist_incant.png"
 
 // @ts-ignore
 import lightningVid from "assets/video/lightning.mp4"
