@@ -166,7 +166,7 @@ export const TEXT_HEIGHT = (function () {
   // use anon function so we don't have cluttered global
   let root = document.documentElement
   let style = window.getComputedStyle(root).fontSize
-  return parseFloat(style)
+  return parseFloat(style) * 1.5 // add a bit of a buffer since some text go below others
 })()
 
 /**

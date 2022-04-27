@@ -10,9 +10,23 @@ import RangeNode from "services/RangeNode"
 // assets
 import fiveImg from "assets/img/five_square.png"
 import oneImg from "assets/img/one_square.png"
+import twoImg from "assets/img/two.png"
+import oneHorizontalImg from "assets/img/rotate_x.png"
+import lShapeImg from "assets/img/reset.png"
 import grabFistImg from "assets/img/grab_fist_square.png"
+
 // @ts-ignore
 import lightningVid from "assets/video/lightning.mp4"
+// @ts-ignore
+import hummingBirdVid from "assets/video/bird.mp4"
+// @ts-ignore
+import butterflyVid from "assets/video/butterfly.mp4"
+// @ts-ignore
+import fireVid from "assets/video/fire.mp4"
+// @ts-ignore
+import earthVid from "assets/video/earth.mp4"
+// @ts-ignore
+import jellyFishVid from "assets/video/jellyfish.mp4"
 
 /* See configs at bottom of file */
 
@@ -184,8 +198,10 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
       return
     }
 
+    // find how many incants are visible right now => adjust the spawn prob based on that
+    let count = this.state.incantPool.reduce((count, val) => count + (val.isVisible ? 1 : 0), 0)
     // randomly spawn an incantation by activating an invisible incantation.
-    if (getRandomInt(1, 10) <= SPAWN_PROBABILITY_NUM) {
+    if (getRandomInt(1, 10) <= BASE_SPAWN_PROBABILITY_NUM - SPAWN_PROBABILIY_DECREASE * count) {
       let copy = this.state.incantPool.slice()
       this.activateIncantation(copy[invisibleIncantIndex])
       this.setState({incantPool: copy})
@@ -315,7 +331,12 @@ const MAX_INCANTATION_AMOUNT = 3
 /**
  * The probability of spawning an incantation out of 10.
  */
-const SPAWN_PROBABILITY_NUM = 10
+const BASE_SPAWN_PROBABILITY_NUM = 6
+
+/**
+ * The rate of decrease for spawning incantations.
+ */
+const SPAWN_PROBABILIY_DECREASE = 2
 
 /**
  * The maximum x value an Incantation can be spawned with.
@@ -375,22 +396,40 @@ interface IncantationConfig {
  */
 const incantsConfig: {[key: string]: IncantationConfig} = {
   "lightning": {
-    "gesture": Gesture.FIVE,
-    "vidUrl": lightningVid,
-    "imgUrl": fiveImg,
-    "dictionary": ["闪电", "chớp", "kidlat", "آذرخش", "éclair"]
-  },
-  "snow": {
     "gesture": Gesture.ONE,
     "vidUrl": lightningVid,
     "imgUrl": oneImg,
-    "dictionary": ["tuyết"]
+    "dictionary": ["闪电", "sấm chớp", "kidlat", "آذرخش", "éclair"]
   },
-  "rain": {
+  "hummingbird": {
+    "gesture": Gesture.ONE_HORIZONTAL,
+    "vidUrl": hummingBirdVid,
+    "imgUrl": oneHorizontalImg,
+    "dictionary": ["蜂鸟", "chim ruồi", "ibon", "مرغ مگس خوار", "colibri"]
+  },
+  "butterfly": {
     "gesture": Gesture.TWO,
-    "vidUrl": lightningVid,
+    "vidUrl": butterflyVid,
+    "imgUrl": twoImg,
+    "dictionary": ["蝴蝶", "bươm bướm", "paruparo", "پروانه", "papillon"]
+  },
+  "jellyfish": {
+    "gesture": Gesture.L_SHAPE,
+    "vidUrl": jellyFishVid,
+    "imgUrl": lShapeImg,
+    "dictionary": ["水母", "sứa", "dikya", "چتر دریایی", "méduse"]
+  },
+  "fire": {
+    "gesture": Gesture.FIVE,
+    "vidUrl": fireVid,
+    "imgUrl": fiveImg,
+    "dictionary": ["火灾", "lửa", "sunog", "آتش", "feu"]
+  },
+  "earth": {
+    "gesture": Gesture.GRAB_FIST,
+    "vidUrl": earthVid,
     "imgUrl": grabFistImg,
-    "dictionary": ["mưa"]
+    "dictionary": ["地球", "Trái Đất", "Ang Mundo", "زمین", "La Terre"]
   }
 }
 
