@@ -30,7 +30,7 @@ export default class LoadingScene extends React.Component<SceneProps> {
   }
 
   removeScene = () => {
-    // this.props.loadSceneCallback(Scenes.MENU)
-    this.props.loadSceneCallback(Scenes.EATHER)
+    this.props.loadSceneCallback(Scenes.MENU)
+    // this.props.loadSceneCallback(Scenes.EATHER)
   }
 }

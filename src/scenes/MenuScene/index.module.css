@@ -1,11 +1,10 @@
 .scene {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 3fr 1fr;
   top: 15vh;
   height: 80vh; /* Don't want to block the top*/
-  width: 70vw; 
   text-align: center;
   align-items: center;
   justify-items: center;

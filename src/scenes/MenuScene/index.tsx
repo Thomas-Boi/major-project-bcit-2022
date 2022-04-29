@@ -6,7 +6,7 @@ import * as Gesture from "services/Gesture"
 import StatusBar from "components/StatusBar";
 import one from "assets/img/one.png"
 import two from "assets/img/two.png"
-// import three from "assets/img/three.png"
+import three from "assets/img/three.png"
 import {Scenes} from "services/util"
 
 const GESTURE_TRIGGER_TIME_MILISEC = 1000
@@ -29,7 +29,8 @@ interface IState {
  */
 const gestureCommandObj = {
 	[Gesture.ONE.name]: "3D VIEWER",
-	[Gesture.TWO.name]: "SLIDESHOW"
+	[Gesture.TWO.name]: "SLIDESHOW",
+	[Gesture.THREE.name]: "EATHER"
 }
 
 export default class MenuScene extends React.Component<SceneProps, IState> {
@@ -59,10 +60,11 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 				<StatusBar gesture={this.state.gesture} name={gestureCommandObj[this.state.gesture.name]} progress={this.state.progress}/>
 				<span className={styles.rightHandTxt}>*RIGHT HAND ONLY</span>
 				<img className={styles.img} src={one} alt='One: select 3D Viewer'/>
-				<img className={styles.img} src={two} alt='Two: holographic slideshow'/>
-				{/* <img className={styles.img} src={three} alt='Three: holographic slideshow'/> */}
+				<img className={styles.img} src={two} alt='Two: select holographic slideshow'/>
+				<img className={styles.img} src={three} alt='Three: select eather'/>
 				<div className={styles.text}>3D Viewer</div>
 				<div className={styles.text}>Slideshow</div>
+				<div className={styles.text}>Eather</div>
 			</div>
 		)
 	}
@@ -99,15 +101,16 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 			let progress = (Date.now() - gestureStartTime) / GESTURE_TRIGGER_TIME_MILISEC
 			this.setState({progress})
 			if (Date.now() - gestureStartTime >= GESTURE_TRIGGER_TIME_MILISEC) {
-				// this.props.loadSceneCallback(Scenes.HOLOGRAPHIC)
 				this.props.loadSceneCallback(Scenes.EATHER)
 			}
 		}
-		// else if (curGesture === THREE) {
-		// 	if (Date.now() - gestureStartTime >= GESTURE_TRIGGER_TIME_MILISEC) {
-		// 		scene = Scenes.EATHER
-		// 	}
-		// }
+		else if (curGesture === Gesture.THREE) {
+			let progress = (Date.now() - gestureStartTime) / GESTURE_TRIGGER_TIME_MILISEC
+			this.setState({progress})
+			if (Date.now() - gestureStartTime >= GESTURE_TRIGGER_TIME_MILISEC) {
+				this.props.loadSceneCallback(Scenes.EATHER)
+			}
+		}
 	}
 
 }
