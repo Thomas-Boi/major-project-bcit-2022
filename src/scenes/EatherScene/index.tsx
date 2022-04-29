@@ -55,9 +55,9 @@ interface IState {
   incantPool: Array<IncantationData>
 
   /**
-   * The extra style of the video. Used for fading in and out.
+   * The extra style of the scene. Used for fading in and out.
    */
-  videoStyle: CSS.Properties
+  sceneStyle: CSS.Properties
 }
 
 
@@ -92,7 +92,7 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 			curGesture: null,
 			gestureStartTime: 0,
 			incantPool,
-      videoStyle: {}
+      sceneStyle: {}
 		}
 
 		this.incantVideoPlaying = false
@@ -108,17 +108,18 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
         {...data}
 				imgUrl={incantsConfig[data.name]?.imgUrl} 
 				selected={data.name === this.selectedIncantName} 
-				removeIncant={this.removeIncantation.bind(this, index)}/> 
+				removeIncant={this.removeIncantation.bind(this, index)}
+        fadeOutScreen={this.fadeOutScreen}/> 
     })
 
     return (
-			<div className={style.container}>
+			<div className={style.container} style={this.state.sceneStyle}>
 				{items}
         <video className={style.video} 
           src={this.state.curVideoSrc} 
           autoPlay onEnded={this.onVideoEnded} 
           loop={this.state.curVideoSrc === smokeVid}
-          style={this.state.videoStyle}></video>
+          ></video>
       </div>
     )
   }
@@ -152,56 +153,54 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
    */
 	update = (hand: Hand | null, prevHand: Hand | null, curGesture: Gesture.Gesture, gestureStartTime: number) => {
 		// do nothing if a video is playing => save computation cycles
-		if (this.incantVideoPlaying) {
-			return
-		}
+		if (this.incantVideoPlaying) return 
 
     let active = this.state.incantPool.find(incant => {
       return incantsConfig[incant.name]?.gesture === curGesture
     })
 
 		// check if the active gesture is the same one we have been holding
-    if (active?.name === this.selectedIncantName) {
-      // check time hold
-			if (Date.now() - gestureStartTime >= PLAY_VID_THRESHOLD_TIME_MILI) {
-        // remove all gestures
-        this.setState({
-          incantPool: this.state.incantPool.map(incant => {
-            // don't have to set isVisible to false: the Incantation will do that
-            // via the removeIncantation callback
-            incant.forceFadeOut = true
-            return incant 
-          }),
-          videoStyle: { // fade out the vid too
-            opacity: 0,
-            transition: `opacity ${FORCE_FADE_TIME_MILI}ms`
-          }
-        })
-
-        // once screen is black, prepare to play vid
-        setTimeout(() => {
-          // settings back to normal
-          this.setState({
-            incantPool: this.state.incantPool.map(incant => {
-              incant.forceFadeOut = false
-              return incant
-            }),
-            videoStyle: {}
-          })
-          this.playVideo(incantsConfig[active.name].vidUrl)
-        }, FORCE_FADE_TIME_MILI + 10) // only play the video after all the incants disappear
-			}
-    }
-		// if not the same one, set it to this new one
-    else this.selectedIncantName = active?.name ? active.name : ""
+    this.selectedIncantName = active?.name ? active.name : ""
 	}
+
+  /**
+   * Fade out the screen then start playing the video
+   * with the gesture name.
+   * @param gestureName name of the gesture.
+   * @returns 
+   */
+  fadeOutScreen = (gestureName: string) => {
+    // don't have to keep playing if video is already playing
+    if (this.incantVideoPlaying) return
+
+    // remove all gestures
+    this.setState({
+      sceneStyle: { // fade out the vid too
+        opacity: 0,
+        transition: `opacity ${FORCE_FADE_TIME_MILI}ms`
+      },
+      incantPool: this.state.incantPool.map(incant => {
+        incant.forceFadeOut = true // remove gestures
+        return incant
+      })
+    })
+
+    // once screen is black, prepare to play vid
+    setTimeout(() => {
+      // settings back to normal
+      this.setState({
+        sceneStyle: {}
+      })
+      this.playVideo(incantsConfig[gestureName].vidUrl)
+    }, FORCE_FADE_TIME_MILI + 10) // only play the video after all the incants disappear
+
+  }
 
 	/**
 	 * Play the video specified by vidName.
 	 * @param vidName the video name
 	 */
 	playVideo = (vidName: string) => {
-		if (this.incantVideoPlaying) return
 		this.incantVideoPlaying = true
 		this.setState({curVideoSrc: vidName})
 	}
@@ -210,14 +209,20 @@ export default class EatherScene extends React.Component<SceneProps, IState> {
 	 * Handle the event when a video finishes playing.
 	 */
 	onVideoEnded = () => {
-    this.setState({videoStyle: {
-      opacity: 0 // prepare to fade in the video => has to be invisible first
-    }}) 
+    this.setState({
+      sceneStyle: {
+        opacity: 0 // prepare to fade in the video => has to be invisible first
+      },
+      incantPool: this.state.incantPool.map(incant => {
+        incant.forceFadeOut = false
+        return incant
+      })
+  }) 
 
     setTimeout(() => {
       this.setState({
         curVideoSrc: smokeVid,
-        videoStyle: {
+        sceneStyle: {
           transition: `opacity ${VIDEO_END_WAIT_TIME - SMOKE_FADE_IN_TIME}ms`
         }
       }) 
@@ -473,10 +478,6 @@ const incantsConfig: {[key: string]: IncantationConfig} = {
 }
 
 /////////////// VIDEO RELATED CONFIG //////////////////
-/**
- * How long the user need to hold the gesture before we play the video.
- */
-const PLAY_VID_THRESHOLD_TIME_MILI = 3000
 
 /**
  * The wait time after an incant video played before we return

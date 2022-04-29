@@ -30,6 +30,11 @@ export interface IncantationProps extends IncantationData {
    * Remove the incantation from the screen.
    */
   removeIncant: () => void
+
+  /**
+   * Fade out the screen. 
+   */
+  fadeOutScreen: (gestureName: string) => void
 }
 
 /**
@@ -48,6 +53,10 @@ export class Incantation extends React.Component<IncantationProps, IState> {
    */
   fadeOutTimer: ReturnType<typeof setTimeout>
 
+  /**
+   * The timer for when the incantation should fade out.
+   */
+  selectedTimer: ReturnType<typeof setTimeout>
   
   /**
    * Whether the incantation is in the process of fading out.
@@ -76,33 +85,33 @@ export class Incantation extends React.Component<IncantationProps, IState> {
         "opacity": FADE_IN_OPACITY
       }
       
-      // add on styling => this depends on the order
-      // if incant is being selected => it cannot fade away
-      // if incant is fading away => it cannot be selected
-      
-      // only go into select mode if we aren't fading out currently
-      if (this.props.selected && !this.isFadingOut) {
-        style.transform += " scale(1.2)"
-        style.transition = SELECTED_TRANSITION
-        style.opacity = 1
-      }
-      // use else if so we never start fade out while being selected
-      else if (this.state.startFadingOut) {
-        style.opacity = 0
-        this.isFadingOut = true
-        // this timer has to be set here since it starts when 
-        // we start fading out
-        if (this.fadeOutTimer === undefined)  {
-          this.fadeOutTimer = this.fadeOutCleanUp(FADE_TIME_MILI) 
-        }
-      }
-
-      // force fade out overrides all
+      // force fadeout overrides everything else below it
       if (this.props.forceFadeOut) {
         style.opacity = 0
-        style.transition = FORCED_FADE_OUT_TRANSITION
+        style.transition = ""
       }
-
+      else {
+        // add on styling => this depends on the order
+        // if incant is being selected => it cannot fade away
+        // if incant is fading away => it cannot be selected
+        
+        // only go into select mode if we aren't fading out currently
+        if (this.props.selected && !this.isFadingOut) {
+          style.transform += " scale(1.2)"
+          style.transition = SELECTED_TRANSITION
+          style.opacity = 1
+        }
+        // use else if so we never start fade out while being selected
+        else if (this.state.startFadingOut) {
+          style.opacity = 0
+          this.isFadingOut = true
+          // this timer has to be set here since it starts when 
+          // we start fading out
+          if (this.fadeOutTimer === undefined)  {
+            this.fadeOutTimer = this.fadeOutCleanUp(FADE_TIME_MILI) 
+          }
+        }
+      }
     }
 
     return (
@@ -121,13 +130,6 @@ export class Incantation extends React.Component<IncantationProps, IState> {
    * @param snapshot 
    */
   componentDidUpdate(prevProps: Readonly<IncantationProps>, prevState: Readonly<IState>, snapshot?: any): void {
-    // check for forceFadeOut
-    // false then true => we just got triggered to force fade out
-    if (!prevProps.forceFadeOut && this.props.forceFadeOut) {
-      clearTimeout(this.fadeOutTimer) // remove whatever is present
-      clearTimeout(this.timeToLiveTimer) // end the timer as well here
-      this.fadeOutTimer = this.fadeOutCleanUp(FORCE_FADE_TIME_MILI) // replace with this timer
-    }
 
     // check for timeToLiveTimer
     // false then true => incant is now visible
@@ -135,6 +137,26 @@ export class Incantation extends React.Component<IncantationProps, IState> {
       this.timeToLiveTimer = setTimeout(() => {
         this.setState({startFadingOut: true})
       }, this.props.timeToLive + FADE_TIME_MILI) // includes the fade in time
+    }
+
+    // if false then true => we swapped to force fade out.
+    if (!prevProps.forceFadeOut && this.props.forceFadeOut) {
+      this.isFadingOut = true
+      clearTimeout(this.timeToLiveTimer)
+      clearTimeout(this.fadeOutTimer)
+      this.fadeOutCleanUp(0)
+    }
+  
+    // false then true => user just selected
+    if (!prevProps.selected && this.props.selected) {
+      this.selectedTimer = setTimeout(() => {
+        // only play the video if we aren't fading out
+        if (!this.isFadingOut) this.props.fadeOutScreen(this.props.name)
+      }, PLAY_VID_THRESHOLD_TIME_MILI)    
+    }
+    // true then false => user deselect
+    else if (prevProps.selected && !this.props.selected) {
+      clearTimeout(this.selectedTimer)
     }
   }
 
@@ -149,6 +171,7 @@ export class Incantation extends React.Component<IncantationProps, IState> {
       this.props.removeIncant()
       this.isFadingOut = false
       this.fadeOutTimer = undefined
+      clearTimeout(this.selectedTimer) // incase there's a selected timer that was started
     }, time + 10) // buffer time to ensure gesture faded away completely
 
   }
@@ -195,9 +218,9 @@ const SELECTED_TIME_MILI = 3000
 const SELECTED_TRANSITION = `transform ${SELECTED_TIME_MILI}ms, opacity ${SELECTED_TIME_MILI}ms`
 
 /**
- * The transition specifically for when the incantation is being forced to fade out.
+ * How long the user need to select a gesture before we play the video.
  */
-const FORCED_FADE_OUT_TRANSITION = `opacity ${FORCE_FADE_TIME_MILI}ms`
+const PLAY_VID_THRESHOLD_TIME_MILI = 3000
 
 
 
@@ -215,7 +238,6 @@ export class IncantationData {
    * The gesture name that we will display to the user.
    */
   displayName: string
-
 
   /**
    * The x position as a pixel value.
