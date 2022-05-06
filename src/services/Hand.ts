@@ -57,16 +57,16 @@ export default class Hand {
 		this.ring = new Finger(hand.slice(LANDMARK_INDEX.RING_FINGER_MCP, LANDMARK_INDEX.RING_FINGER_TIP + 1))
 		this.pinky = new Finger(hand.slice(LANDMARK_INDEX.PINKY_MCP, LANDMARK_INDEX.PINKY_TIP + 1))
 
-		// console.log("thumb")
 		this.thumb.analyzeFinger();
-		// console.log("index")
 		this.index.analyzeFinger();
-		// console.log("middle")
 		this.middle.analyzeFinger();
-		// console.log("ring")
 		this.ring.analyzeFinger();
-		// console.log("pinky")
 		this.pinky.analyzeFinger();
+		// console.log({
+		// 	name: "ring",
+		// 	straightness: this.ring.isStraight,
+		// 	direction: this.ring.direction
+		// })
 
 		this.fingerNames = [
 			"thumb",

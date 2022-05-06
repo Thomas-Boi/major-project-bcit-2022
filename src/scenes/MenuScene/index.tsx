@@ -50,7 +50,7 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 		// set up the control to move to the other scenes
 		this.props.gestureDetector.addObserver(this.update, updateKeyName)
 		this.props.gestureDetector.removeAllGesturesToDetect()
-		this.props.gestureDetector.addGesturesToDetect([Gesture.ONE, Gesture.TWO])
+		this.props.gestureDetector.addGesturesToDetect([Gesture.ONE, Gesture.TWO, Gesture.THREE])
 		this.isUnmounted = false
 	}
 
@@ -101,7 +101,7 @@ export default class MenuScene extends React.Component<SceneProps, IState> {
 			let progress = (Date.now() - gestureStartTime) / GESTURE_TRIGGER_TIME_MILISEC
 			this.setState({progress})
 			if (Date.now() - gestureStartTime >= GESTURE_TRIGGER_TIME_MILISEC) {
-				this.props.loadSceneCallback(Scenes.EATHER)
+				this.props.loadSceneCallback(Scenes.HOLOGRAPHIC)
 			}
 		}
 		else if (curGesture === Gesture.THREE) {
