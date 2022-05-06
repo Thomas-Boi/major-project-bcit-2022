@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/public/static/css/main.e0f7305f.css",
-    "main.js": "/public/static/js/main.41610c43.js",
-    "static/media/earth.mp4": "/public/static/media/earth.19945080db01df98e63d.mp4",
-    "static/media/smoke.mp4": "/public/static/media/smoke.88d4cb2713280e09fc7b.mp4",
-    "static/media/fire.mp4": "/public/static/media/fire.9d67466aedc4dbe07a5c.mp4",
-    "static/media/jellyfish.mp4": "/public/static/media/jellyfish.543cb22c31a58aad4edd.mp4",
-    "static/media/bird.mp4": "/public/static/media/bird.923f112d54e5c325876f.mp4",
-    "static/media/butterfly.mp4": "/public/static/media/butterfly.dd94d19784bff02fd374.mp4",
-    "static/media/lightning.mp4": "/public/static/media/lightning.45a6588fd3b4eb1d7214.mp4",
-    "static/media/HolographicShowMusic.mp4": "/public/static/media/HolographicShowMusic.f6ec352847c891b91dd3.mp4",
-    "static/media/translate.png": "/public/static/media/translate.0d746010b0a85c557929.png",
-    "index.html": "/public/index.html",
-    "main.e0f7305f.css.map": "/public/static/css/main.e0f7305f.css.map",
-    "main.41610c43.js.map": "/public/static/js/main.41610c43.js.map"
+    "main.css": "/major-project-bcit-2022/static/css/main.e0f7305f.css",
+    "main.js": "/major-project-bcit-2022/static/js/main.04c928a2.js",
+    "static/media/earth.mp4": "/major-project-bcit-2022/static/media/earth.19945080db01df98e63d.mp4",
+    "static/media/smoke.mp4": "/major-project-bcit-2022/static/media/smoke.88d4cb2713280e09fc7b.mp4",
+    "static/media/fire.mp4": "/major-project-bcit-2022/static/media/fire.9d67466aedc4dbe07a5c.mp4",
+    "static/media/jellyfish.mp4": "/major-project-bcit-2022/static/media/jellyfish.543cb22c31a58aad4edd.mp4",
+    "static/media/bird.mp4": "/major-project-bcit-2022/static/media/bird.923f112d54e5c325876f.mp4",
+    "static/media/butterfly.mp4": "/major-project-bcit-2022/static/media/butterfly.dd94d19784bff02fd374.mp4",
+    "static/media/lightning.mp4": "/major-project-bcit-2022/static/media/lightning.45a6588fd3b4eb1d7214.mp4",
+    "static/media/HolographicShowMusic.mp4": "/major-project-bcit-2022/static/media/HolographicShowMusic.f6ec352847c891b91dd3.mp4",
+    "static/media/translate.png": "/major-project-bcit-2022/static/media/translate.0d746010b0a85c557929.png",
+    "index.html": "/major-project-bcit-2022/index.html",
+    "main.e0f7305f.css.map": "/major-project-bcit-2022/static/css/main.e0f7305f.css.map",
+    "main.04c928a2.js.map": "/major-project-bcit-2022/static/js/main.04c928a2.js.map"
   },
   "entrypoints": [
     "static/css/main.e0f7305f.css",
-    "static/js/main.41610c43.js"
+    "static/js/main.04c928a2.js"
   ]
 }
